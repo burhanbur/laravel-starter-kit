@@ -4,36 +4,70 @@ namespace App\Traits;
 
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Support\Facades\Log;
 
 trait ApiResponse
 {
     protected function successResponse($data, $message = null, $code = 200)
     {
-        $count = 1;
+        $count = 1; // default for single resource/object
         $pagination = null;
 
-        if ($data instanceof ResourceCollection) {
-            if ($data->resource instanceof LengthAwarePaginator) {
-                $count = $data->total();
-                $pagination = [
-                    'total' => $data->total(),
-                    'per_page' => $data->perPage(),
-                    'current_page' => $data->currentPage(),
-                    'last_page' => $data->lastPage(),
-                    'from' => $data->firstItem(),
-                    'to' => $data->lastItem(),
-                ];
-            } else {
-                $count = $data->count();
-            }
+        // Normalize: when using ResourceCollection, look at the underlying resource for paginator info
+        $underlying = $data instanceof ResourceCollection ? $data->resource : $data;
+
+        if ($underlying instanceof LengthAwarePaginator) {
+            // Count items actually returned on this page
+            $count = $underlying->count();
+            $pagination = [
+                'total' => $underlying->total(),
+                'per_page' => $underlying->perPage(),
+                'current_page' => $underlying->currentPage(),
+                'last_page' => $underlying->lastPage(),
+                'from' => $underlying->firstItem(),
+                'to' => $underlying->lastItem(),
+            ];
+        } elseif ($underlying instanceof Paginator) {
+            // Simple paginator doesn't know the total count
+            $count = $underlying->count();
+            $pagination = [
+                'per_page' => $underlying->perPage(),
+                'current_page' => $underlying->currentPage(),
+                'has_more_pages' => $underlying->hasMorePages(),
+                'next_page_url' => method_exists($underlying, 'nextPageUrl') ? $underlying->nextPageUrl() : null,
+                'prev_page_url' => method_exists($underlying, 'previousPageUrl') ? $underlying->previousPageUrl() : null,
+            ];
+        } elseif ($underlying instanceof CursorPaginator) {
+            $count = $underlying->count();
+            $pagination = [
+                'per_page' => $underlying->perPage(),
+                'has_more_pages' => $underlying->hasMorePages(),
+                'next_cursor' => optional($underlying->nextCursor())->encode(),
+                'prev_cursor' => optional($underlying->previousCursor())->encode(),
+            ];
+        } elseif ($data instanceof ResourceCollection) {
+            // Non-paginated resource collection: count transformed items
+            $count = $data->collection instanceof Collection ? $data->collection->count() : $data->count();
         } elseif ($data instanceof JsonResource) {
             $count = 1;
+        } elseif ($data instanceof Collection) {
+            $count = $data->count();
         } elseif (is_array($data)) {
-            $count = count($data);
+            // If array has a conventional 'data' key, prefer counting that
+            if (array_key_exists('data', $data) && is_countable($data['data'])) {
+                $count = count($data['data']);
+            } else {
+                $count = count($data);
+            }
         } elseif (is_null($data)) {
             $count = 0;
+        } else {
+            // Any other single object/model
+            $count = 1;
         }
 
         $response = [
