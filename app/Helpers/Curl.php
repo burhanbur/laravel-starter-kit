@@ -86,3 +86,31 @@ if (!function_exists('putCurl')) {
         return $data;
     }
 }
+
+if (!function_exists('deleteCurl')) {
+    function deleteCurl($url = '', $params = '', $header = [])
+    {
+        $headers = array(
+            'Content-Type: application/json',
+        );
+
+        if ($header) {
+            $headers = array_merge($headers, $header);
+        }
+
+        $ch = curl_init();
+
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($params));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $output = curl_exec($ch);
+
+        curl_close($ch);
+        
+        $data = json_decode($output);
+        
+        return $data;
+    }
+}

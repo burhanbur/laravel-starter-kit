@@ -73,8 +73,6 @@ trait ApiResponse
         $response = [
             'success' => true,
             'message' => $message,
-            'url' => request()->url(),
-            'method' => request()->method(),
             'timestamp' => now()->toDateTimeString(),
             'total_data' => $count,
             'data' => $data,
@@ -84,11 +82,22 @@ trait ApiResponse
             $response['pagination'] = $pagination;
         }
 
+        // Add debug info only for non-production
+        if (!isProduction()) {
+            $response['debug'] = [
+                'url' => request()->url(),
+                'method' => request()->method(),
+            ];
+        }
+
         return response()->json($response, $code);
     }
 
     protected function errorResponse($message, $code = 400)
     {
+        // Store original message for debugging
+        $originalMessage = $message;
+        
         // Jika message berupa array atau JSON string, konversi ke string
         if (is_array($message) || is_object($message)) {
             $message = collect($message)->flatten()->implode(', ');
@@ -101,20 +110,44 @@ trait ApiResponse
         }
 
         if (isProduction()) {
-            Log::error($message, [
+            Log::error('API Error Response', [
+                'message' => $message,
+                'code' => $code,
                 'url' => request()->url(),
                 'method' => request()->method(),
+                'ip' => request()->ip(),
+                'user_agent' => request()->userAgent(),
                 'timestamp' => now()->toDateTimeString(),
             ]);
-            $message = 'An error occurred while processing your request. Please try again later.';
+            
+            // Generic message for production
+            $message = match ($code) {
+                400 => 'Bad request. Please check your request and try again.',
+                401 => 'Unauthorized access. Please login to continue.',
+                403 => 'Forbidden access. You do not have permission to perform this action.',
+                404 => 'The requested resource was not found.',
+                422 => 'Validation error. Please check your input.',
+                429 => 'Too many requests. Please slow down your requests.',
+                500, 503 => 'Service temporarily unavailable. Please try again later.',
+                default => 'An error occurred while processing your request. Please try again later.',
+            };
         }
 
-        return response()->json([
+        $response = [
             'success' => false,
             'message' => $message,
-            'url' => request()->url(),
-            'method' => request()->method(),
             'timestamp' => now()->toDateTimeString(),
-        ], $code);
+        ];
+
+        // Add debug info only for non-production
+        if (!isProduction()) {
+            $response['debug'] = [
+                'url' => request()->url(),
+                'method' => request()->method(),
+                'original_message' => $originalMessage,
+            ];
+        }
+
+        return response()->json($response, $code);
     }
 }
