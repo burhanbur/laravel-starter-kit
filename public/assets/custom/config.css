@@ -1,0 +1,119 @@
+.kt-aside-menu .kt-menu__nav > .kt-menu__item > .kt-menu__heading .kt-menu__link-text,
+.kt-aside-menu .kt-menu__nav > .kt-menu__item > .kt-menu__link .kt-menu__link-text,
+.kt-aside-menu .kt-menu__nav > .kt-menu__item .kt-menu__submenu .kt-menu__item > .kt-menu__heading .kt-menu__link-text,
+.kt-aside-menu .kt-menu__nav > .kt-menu__item .kt-menu__submenu .kt-menu__item > .kt-menu__link .kt-menu__link-text{
+    font-size: .9rem;
+}
+/*bootstrap file input*/
+.thumbnail {
+    width: 280px;
+    border: 2px dashed #ccc;
+}
+.thumbnail img{
+    width: 100%;
+}
+/*bootstrap custom file input*/
+.custom-file-input ~ .custom-file-label::after {
+    content: "Pilih Berkas";
+}
+/*v3.7 bootstrap validation class*/
+.help-block {
+    display: block;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    color: #6789ab;
+}
+.help-block {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+.has-error .checkbox,
+.has-error .checkbox-inline,
+.has-error .control-label,
+.has-error .form-control-feedback,
+.has-error .help-block,
+.has-error .radio,
+.has-error .radio-inline,
+.has-error.checkbox label,
+.has-error.checkbox-inline label,
+.has-error.radio label,
+.has-error.radio-inline label {
+    color: #e73d4a;
+}
+.has-error .form-control,
+.has-error .thumbnail {
+    border-color: #e73d4a;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+}
+
+/* demo 10  */
+/* custom style */
+.header-custom-styling{
+    position: fixed;
+    width: 100%;
+    background-color: #FFF;
+    z-index: 12;
+}
+
+.custom-border-radius{
+    border-radius: 15px;
+}
+
+.custom-bg-primary{
+    background-color: #ffb822;
+}
+.head-intro p{
+    font-weight: bold;
+    font-size: 18px;
+    text-transform: uppercase;
+}
+.head-intro h2{
+    text-transform: uppercase;
+}
+
+.widget ul {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    height: 330px;
+    max-height: 100%;
+}
+.widget ul li {
+    overflow-x: hidden;
+    font-size: 14px;
+    margin-bottom: 20px;
+    border-bottom: 1px dashed #ddd;
+}
+.widget-thumb{
+    float: left;
+    overflow-x: hidden;
+    margin-right: 15px;
+}
+.widget-thumb img{
+    background: #fff;
+    border: 1px dashed #e0e0e0;
+    padding: 3px;
+    height: 75px;
+    width: 75px;
+}
+.widget-content h4{
+    font-size: 14px;
+    cursor: pointer;
+    line-height: 20px;
+    margin: 0;
+}
+.widget-content p{
+    font-size: 12px;
+}
+.widget-content h4 a:hover{
+    color: #2996bd;
+}
+
+.widget-content h4 a{
+    color: #202020;
+    outline: 0 none;
+    text-decoration: none;
+    font-weight: bold
+}
