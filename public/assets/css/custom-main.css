@@ -1,0 +1,73 @@
+@media (max-width: 1024px){
+    .kt-header-mobile--fixed .kt-wrapper {
+        padding-top: 75px;
+    }
+}
+@media (min-width: 1025px){
+    .kt-header {
+        background-color: rgb(19, 92, 178);
+        background: linear-gradient(90deg, rgb(19, 92, 178) 35%, rgb(8, 73, 153) 100%);
+    }
+    .kt-header-menu .kt-menu__nav>.kt-menu__item.kt-menu__item--active>.kt-menu__link,
+    .kt-header-menu .kt-menu__nav>.kt-menu__item.kt-menu__item--here>.kt-menu__link,
+    .kt-header-menu .kt-menu__nav>.kt-menu__item:hover>.kt-menu__link,
+    .kt-header-menu .kt-menu__nav>.kt-menu__item.kt-menu__item--hover:not(.kt-menu__item--here):not(.kt-menu__item--active)>.kt-menu__link,
+    .kt-header-menu .kt-menu__nav>.kt-menu__item:hover:not(.kt-menu__item--here):not(.kt-menu__item--active)>.kt-menu__link {
+        background-color: #f5f6fc;
+    }
+    .kt-header-menu .kt-menu__nav>.kt-menu__item>.kt-menu__link .kt-menu__link-text,
+    .kt-header-menu .kt-menu__nav>.kt-menu__item>.kt-menu__link>.kt-menu__link-icon{
+        color: #F4F4F4;
+    }
+    .kt-header-menu .kt-menu__nav>.kt-menu__item.kt-menu__item--active>.kt-menu__link .kt-menu__link-text,
+    .kt-header-menu .kt-menu__nav>.kt-menu__item:hover>.kt-menu__link .kt-menu__link-text,
+    .kt-header-menu .kt-menu__nav>.kt-menu__item.kt-menu__item--hover:not(.kt-menu__item--here):not(.kt-menu__item--active)>.kt-menu__link .kt-menu__link-text, .kt-header-menu .kt-menu__nav>.kt-menu__item:hover:not(.kt-menu__item--here):not(.kt-menu__item--active)>.kt-menu__link .kt-menu__link-text
+    {
+        color: rgb(19, 92, 178);
+    }
+
+
+
+    .kt-header-menu .kt-menu__nav>.kt-menu__item.kt-menu__item--active>.kt-menu__link>.kt-menu__link-icon,
+    .kt-header-menu .kt-menu__nav>.kt-menu__item.kt-menu__item--here>.kt-menu__link>.kt-menu__link-icon,
+    .kt-header-menu .kt-menu__nav>.kt-menu__item.kt-menu__item--hover>.kt-menu__link>.kt-menu__link-icon,
+    .kt-header-menu .kt-menu__nav>.kt-menu__item:hover>.kt-menu__link>.kt-menu__link-icon{
+        color: rgb(8, 73, 153);
+    }
+
+    .kt-header__topbar .kt-header__topbar-item .kt-header__topbar-wrapper button > i,
+    .kt-header__topbar .kt-header__topbar-item .kt-header__topbar-wrapper .btn.dropdown-toggle:after{
+        color: #FFF;
+    }
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-left {
+    text-align: left;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.content-center {
+    justify-content: center; 
+    align-items: center; 
+    display: flex;
+}
+
+.responsive-embed-container {
+    width: 100%;
+    height: 80vh; /* 80% dari tinggi viewport */
+    max-height: 90vh;
+    overflow: hidden;
+}
+
+.responsive-embed-container embed {
+    width: 100%;
+    height: 100%;
+    border: none;
+}

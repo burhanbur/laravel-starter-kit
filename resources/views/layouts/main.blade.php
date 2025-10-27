@@ -28,7 +28,7 @@
 	<meta name="msapplication-TileColor" content="#f4f4f4">
 	<meta name="theme-color" content="#f4f4f4">
 
-	<link rel="icon" type="image/png" sizes="16x16" href="{{ asset('assets/images/circle-icon.png') }}">
+	<link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon.ico') }}">
 
 	<!--begin::Fonts -->
 	<script src="{{ asset('assets/web-font.js') }}"></script>
@@ -66,81 +66,7 @@
 	<link href="{{ asset('assets/css/demo1/skins/brand/light.min.css') }}" rel="stylesheet" type="text/css" />
 	<link href="{{ asset('assets/css/demo1/skins/aside/light.min.css') }}" rel="stylesheet" type="text/css" />
 	<!--begin::Page Custom Styles(used by this page) -->
-	<style>
-		@media (max-width: 1024px){
-			.kt-header-mobile--fixed .kt-wrapper {
-				padding-top: 75px;
-			}
-		}
-		@media (min-width: 1025px){
-			.kt-header {
-				background-color: rgb(19, 92, 178);
-				background: linear-gradient(90deg, rgb(19, 92, 178) 35%, rgb(8, 73, 153) 100%);
-			}
-			.kt-header-menu .kt-menu__nav>.kt-menu__item.kt-menu__item--active>.kt-menu__link,
-			.kt-header-menu .kt-menu__nav>.kt-menu__item.kt-menu__item--here>.kt-menu__link,
-			.kt-header-menu .kt-menu__nav>.kt-menu__item:hover>.kt-menu__link,
-			.kt-header-menu .kt-menu__nav>.kt-menu__item.kt-menu__item--hover:not(.kt-menu__item--here):not(.kt-menu__item--active)>.kt-menu__link,
-			.kt-header-menu .kt-menu__nav>.kt-menu__item:hover:not(.kt-menu__item--here):not(.kt-menu__item--active)>.kt-menu__link {
-				background-color: #f5f6fc;
-			}
-			.kt-header-menu .kt-menu__nav>.kt-menu__item>.kt-menu__link .kt-menu__link-text,
-			.kt-header-menu .kt-menu__nav>.kt-menu__item>.kt-menu__link>.kt-menu__link-icon{
-				color: #F4F4F4;
-			}
-			.kt-header-menu .kt-menu__nav>.kt-menu__item.kt-menu__item--active>.kt-menu__link .kt-menu__link-text,
-			.kt-header-menu .kt-menu__nav>.kt-menu__item:hover>.kt-menu__link .kt-menu__link-text,
-			.kt-header-menu .kt-menu__nav>.kt-menu__item.kt-menu__item--hover:not(.kt-menu__item--here):not(.kt-menu__item--active)>.kt-menu__link .kt-menu__link-text, .kt-header-menu .kt-menu__nav>.kt-menu__item:hover:not(.kt-menu__item--here):not(.kt-menu__item--active)>.kt-menu__link .kt-menu__link-text
-			{
-				color: rgb(19, 92, 178);
-			}
-
-
-
-			.kt-header-menu .kt-menu__nav>.kt-menu__item.kt-menu__item--active>.kt-menu__link>.kt-menu__link-icon,
-			.kt-header-menu .kt-menu__nav>.kt-menu__item.kt-menu__item--here>.kt-menu__link>.kt-menu__link-icon,
-			.kt-header-menu .kt-menu__nav>.kt-menu__item.kt-menu__item--hover>.kt-menu__link>.kt-menu__link-icon,
-			.kt-header-menu .kt-menu__nav>.kt-menu__item:hover>.kt-menu__link>.kt-menu__link-icon{
-				color: rgb(8, 73, 153);
-			}
-
-			.kt-header__topbar .kt-header__topbar-item .kt-header__topbar-wrapper button > i,
-			.kt-header__topbar .kt-header__topbar-item .kt-header__topbar-wrapper .btn.dropdown-toggle:after{
-				color: #FFF;
-			}
-		}
-
-		.text-center {
-			text-align: center;
-		}
-
-		.text-left {
-			text-align: left;
-		}
-
-	    .text-right {
-	        text-align: right;
-	    }
-
-	    .content-center {
-	    	justify-content: center; 
-	    	align-items: center; 
-	    	display: flex;
-	    }
-
-		.responsive-embed-container {
-			width: 100%;
-			height: 80vh; /* 80% dari tinggi viewport */
-			max-height: 90vh;
-			overflow: hidden;
-		}
-
-		.responsive-embed-container embed {
-			width: 100%;
-			height: 100%;
-			border: none;
-		}
-	</style>
+	<link href="{{ asset('assets/css/custom-main.css') }}" rel="stylesheet" type="text/css" />
 	<link rel="stylesheet" href="{{ asset('assets/custom/config.css') }}">
 	@yield('css')
 </head>
@@ -180,181 +106,19 @@
 								</a>
 							</li>
 
-							{{-- <li class="kt-menu__item @if(\Request::segment(2) == 'pendaftaran') kt-menu__item--open kt-menu__item--here @endif kt-menu__item--submenu" aria-haspopup="true" data-ktmenu-submenu-toggle="hover">
-								<a href="javascript:;" class="kt-menu__link kt-menu__toggle">
-									<i class="kt-menu__link-icon flaticon2-list-2"></i>
-									<span class="kt-menu__link-text">Data Pendaftaran</span>
-									<i class="kt-menu__ver-arrow la la-angle-right"></i>
-								</a>
-								<div class="kt-menu__submenu "><span class="kt-menu__arrow"></span>
-									<ul class="kt-menu__subnav">
-										<li class="kt-menu__item  kt-menu__item--parent" aria-haspopup="true">
-											<span class="kt-menu__link">
-												<span class="kt-menu__link-text">Data Pendaftaran</span>
-											</span>
-										</li>
-
-										@foreach(\App\Models\JalurMasuk::where('is_active', '1')->orderBy('id', 'desc')->get() as $item)
-										<li class="kt-menu__item @if(\Request::segment(2) == 'pendaftaran' && \Request::segment(3) == $item->id) kt-menu__item--active @endif" aria-haspopup="true">
-											<a href="{{ null }}" class="kt-menu__link ">
-												<i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
-												<span class="kt-menu__link-text">Jalur {{ $item->nama_pendek }}</span>
-											</a>
-										</li>
-										@endforeach
-									</ul>
-								</div>
-							</li> 
-							
-							<li class="kt-menu__item @if(\Request::segment(2) == 'pembayaran') kt-menu__item--open kt-menu__item--here @endif kt-menu__item--submenu" aria-haspopup="true" data-ktmenu-submenu-toggle="hover">
-								<a href="javascript:;" class="kt-menu__link kt-menu__toggle">
-									<i class="kt-menu__link-icon flaticon2-list"></i>
-									<span class="kt-menu__link-text">Data Pembayaran</span>
-									<i class="kt-menu__ver-arrow la la-angle-right"></i>
-								</a>
-								<div class="kt-menu__submenu "><span class="kt-menu__arrow"></span>
-									<ul class="kt-menu__subnav">
-										<li class="kt-menu__item  kt-menu__item--parent" aria-haspopup="true">
-											<span class="kt-menu__link">
-												<span class="kt-menu__link-text">Data Pembayaran</span>
-											</span>
-										</li>
-
-										@foreach(\App\Models\JalurMasuk::where('is_active', '1')->orderBy('id', 'desc')->get() as $item)
-										<li class="kt-menu__item @if(\Request::segment(2) == 'pembayaran' && \Request::segment(3) == $item->id) kt-menu__item--active @endif" aria-haspopup="true">
-											<a href="{{ null }}" class="kt-menu__link ">
-												<i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
-												<span class="kt-menu__link-text">Jalur {{ $item->nama_pendek }}</span>
-											</a>
-										</li>
-										@endforeach
-									</ul>
-								</div>
-							</li>
-							
-							<li class="kt-menu__item @if(\Request::segment(2) == 'calon-mhs') kt-menu__item--open kt-menu__item--here @endif kt-menu__item--submenu" aria-haspopup="true" data-ktmenu-submenu-toggle="hover">
-								<a href="javascript:;" class="kt-menu__link kt-menu__toggle">
-									<i class="kt-menu__link-icon flaticon2-group"></i>
-									<span class="kt-menu__link-text">Kelengkapan Data</span>
-									<i class="kt-menu__ver-arrow la la-angle-right"></i>
-								</a>
-								<div class="kt-menu__submenu "><span class="kt-menu__arrow"></span>
-									<ul class="kt-menu__subnav">
-										<li class="kt-menu__item  kt-menu__item--parent" aria-haspopup="true">
-											<span class="kt-menu__link">
-												<span class="kt-menu__link-text">Calon Mahasiswa</span>
-											</span>
-										</li>
-
-										@foreach(\App\Models\JalurMasuk::where('is_active', '1')->orderBy('id', 'desc')->get() as $item)
-										<li class="kt-menu__item @if(\Request::segment(2) == 'calon-mhs' && \Request::segment(3) == $item->id) kt-menu__item--active @endif" aria-haspopup="true">
-											<a href="{{ null }}" class="kt-menu__link ">
-												<i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
-												<span class="kt-menu__link-text">Jalur {{ $item->nama_pendek }}</span>
-											</a>
-										</li>
-										@endforeach
-									</ul>
-								</div>
-							</li>
-							
-							<li class="kt-menu__item @if(\Request::segment(2) == 'ujian-akademik') kt-menu__item--open kt-menu__item--here @endif kt-menu__item--submenu" aria-haspopup="true" data-ktmenu-submenu-toggle="hover">
-								<a href="javascript:;" class="kt-menu__link kt-menu__toggle">
-									<i class="kt-menu__link-icon flaticon-file"></i>
-									<span class="kt-menu__link-text">Ujian Akademik</span>
-									<i class="kt-menu__ver-arrow la la-angle-right"></i>
-								</a>
-								<div class="kt-menu__submenu "><span class="kt-menu__arrow"></span>
-									<ul class="kt-menu__subnav">
-										<li class="kt-menu__item  kt-menu__item--parent" aria-haspopup="true">
-											<span class="kt-menu__link">
-												<span class="kt-menu__link-text">Ujian Akademik</span>
-											</span>
-										</li>
-
-										@foreach(\App\Models\JalurMasuk::where('is_ujian','1')->where('is_active', '1')->orderBy('id', 'desc')->get() as $item)
-										<li class="kt-menu__item @if(\Request::segment(2) == 'ujian-akademik' && \Request::segment(3) == $item->id) kt-menu__item--active @endif" aria-haspopup="true">
-											<a href="{{ null }}" class="kt-menu__link ">
-												<i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
-												<span class="kt-menu__link-text">Jalur {{ $item->nama_pendek }}</span>
-											</a>
-										</li>
-										@endforeach
-									</ul>
-								</div>
-							</li> --}}
-
-							<li class="kt-menu__item @if(\Request::segment(2) == 'pendaftaran') kt-menu__item--active @endif" aria-haspopup="true">
+							<li class="kt-menu__item @if(\Request::segment(2) == 'menu') kt-menu__item--active @endif" aria-haspopup="true">
 								<a href="{{ null }}" class="kt-menu__link ">
 									<span class="kt-menu__link-icon">
 										<i class="flaticon-users"></i>
 									</span>
-									<span class="kt-menu__link-text">Data Pendaftaran</span>
+									<span class="kt-menu__link-text">Menu</span>
 								</a>
 							</li>
 
-							<li class="kt-menu__item @if(\Request::segment(2) == 'calon-mhs') kt-menu__item--active @endif" aria-haspopup="true">
-								<a href="{{ null }}" class="kt-menu__link ">
-									<span class="kt-menu__link-icon">
-										<i class="flaticon-edit-1"></i>
-									</span>
-									<span class="kt-menu__link-text">Kelengkapan Data</span>
-								</a>
-							</li>
-
-							@if (auth()->user()->role ?? null == 'admin')
-							<li class="kt-menu__item @if(\Request::segment(2) == 'kelulusan') kt-menu__item--active @endif" aria-haspopup="true">
-								<a href="{{ null }}" class="kt-menu__link ">
-									<span class="kt-menu__link-icon">
-										<i class="flaticon2-correct"></i>
-									</span>
-									<span class="kt-menu__link-text">Rekomendasi Kelulusan</span>
-								</a>
-							</li>
-							@endif
-
-							<li class="kt-menu__item @if(\Request::segment(2) == 'cicilan') kt-menu__item--active @endif" aria-haspopup="true">
-								<a href="{{ null }}" class="kt-menu__link ">
-									<span class="kt-menu__link-icon">
-										<i class="flaticon-notepad"></i>
-									</span>
-									<span class="kt-menu__link-text">Pengajuan Cicilan</span>
-								</a>
-							</li>
-
-							<li class="kt-menu__item @if(\Request::segment(2) == 'daftar-ulang') kt-menu__item--active @endif" aria-haspopup="true">
-								<a href="{{ null }}" class="kt-menu__link ">
-									<span class="kt-menu__link-icon">
-										<i class="flaticon-rotate"></i>
-									</span>
-									<span class="kt-menu__link-text">Daftar Ulang</span>
-								</a>
-							</li>
-
-							@if (auth()->user()->role ?? null == 'admin')
-							<li class="kt-menu__item @if(\Request::segment(2) == 'pop-up') kt-menu__item--active @endif" aria-haspopup="true">
-								<a href="{{ null }}" class="kt-menu__link ">
-									<span class="kt-menu__link-icon">
-										<i class="flaticon-notes"></i>
-									</span>
-									<span class="kt-menu__link-text">POP UP</span>
-								</a>
-							</li>
-
-							<li class="kt-menu__item @if(\Request::segment(2) == 'verifikasi-mahasiswa') kt-menu__item--active @endif" aria-haspopup="true">
-								<a href="{{ null }}" class="kt-menu__link ">
-									<span class="kt-menu__link-icon">
-										<i class="flaticon-profile"></i>
-									</span>
-									<span class="kt-menu__link-text">Verifikasi Mahasiswa</span>
-								</a>
-							</li>
-							@endif
-
-							<li class="kt-menu__item @if(\Request::segment(2) == 'pengunduran-diri') kt-menu__item--open kt-menu__item--here @endif kt-menu__item--submenu" aria-haspopup="true" data-ktmenu-submenu-toggle="hover">								
+							<li class="kt-menu__item @if(\Request::segment(2) == 'sub-menu') kt-menu__item--open kt-menu__item--here @endif kt-menu__item--submenu" aria-haspopup="true" data-ktmenu-submenu-toggle="hover">								
 								<a href="javascript::void(0);" class="kt-menu__link kt-menu__toggle">
 									<i class="kt-menu__link-icon flaticon-delete"></i>
-									<span class="kt-menu__link-text">Pengunduran Diri</span>
+									<span class="kt-menu__link-text">Sub Menu</span>
 									<i class="kt-menu__ver-arrow la la-angle-right"></i>
 								</a>
 
@@ -362,166 +126,26 @@
 									<ul class="kt-menu__subnav">
 										<li class="kt-menu__item  kt-menu__item--parent" aria-haspopup="true">
 											<span class="kt-menu__link">
-												<span class="kt-menu__link-text">Pengunduran Diri</span>
+												<span class="kt-menu__link-text">Sub Menu</span>
 											</span>
 										</li>
 
 										<li class="kt-menu__item @if(\Request::segment(2) == 'pengunduran-diri' && \Request::segment(3) == 'pendaftaran') kt-menu__item--active @endif" aria-haspopup="true">
 											<a href="{{ null }}" class="kt-menu__link ">
 												<i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
-												<span class="kt-menu__link-text">Pendaftaran</span>
+												<span class="kt-menu__link-text">Level 1</span>
 											</a>
 										</li>
 
 										<li class="kt-menu__item @if(\Request::segment(2) == 'pengunduran-diri' && \Request::segment(3) == 'daftar-ulang') kt-menu__item--active @endif" aria-haspopup="true">
 											<a href="{{ null }}" class="kt-menu__link ">
 												<i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
-												<span class="kt-menu__link-text">Daftar Ulang</span>
+												<span class="kt-menu__link-text">Level 1</span>
 											</a>
 										</li>
 									</ul>
 								</div>
 							</li>
-
-							<!-- 
-							<li class="kt-menu__item @if(\Request::segment(2) == 'cms-website') kt-menu__item--active @endif" aria-haspopup="true">
-								<a href="{{ null }}" class="kt-menu__link ">
-									<span class="kt-menu__link-icon">
-										<i class="flaticon-users"></i>
-									</span>
-									<span class="kt-menu__link-text">Memperoleh NIM</span>
-								</a>
-							</li>
-
-							<li class="kt-menu__item @if(\Request::segment(2) == 'cicilan') kt-menu__item--active @endif" aria-haspopup="true">
-								<a href="{{ null }}" class="kt-menu__link ">
-									<span class="kt-menu__link-icon">
-										<i class="la la-credit-card"></i>
-									</span>
-									<span class="kt-menu__link-text">Cicilan</span>
-								</a>
-							</li> -->
-
-							@if (auth()->user()->role ?? null == 'admin')
-							<li class="kt-menu__item @if(\Request::segment(2) == 'laporan') kt-menu__item--open kt-menu__item--here @endif kt-menu__item--submenu" aria-haspopup="true" data-ktmenu-submenu-toggle="hover">								
-								<a href="javascript:;" class="kt-menu__link kt-menu__toggle">
-									<i class="kt-menu__link-icon flaticon2-document"></i>
-									<span class="kt-menu__link-text">Laporan</span>
-									<i class="kt-menu__ver-arrow la la-angle-right"></i>
-								</a>
-
-								<div class="kt-menu__submenu "><span class="kt-menu__arrow"></span>
-									<ul class="kt-menu__subnav">
-										<li class="kt-menu__item  kt-menu__item--parent" aria-haspopup="true">
-											<span class="kt-menu__link">
-												<span class="kt-menu__link-text">Laporan</span>
-											</span>
-										</li>
-
-										<li class="kt-menu__item @if(\Request::segment(2) == 'laporan' && \Request::segment(3) == 'camaba') kt-menu__item--active @endif" aria-haspopup="true">
-											<a href="{{ null }}" class="kt-menu__link ">
-												<i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
-												<span class="kt-menu__link-text">Calon Mahasiswa Baru</span>
-											</a>
-										</li>
-
-										<li class="kt-menu__item @if(\Request::segment(2) == 'laporan' && \Request::segment(3) == 'seleksi-beasiswa') kt-menu__item--active @endif" aria-haspopup="true">
-											<a href="{{ null }}" class="kt-menu__link ">
-												<i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
-												<span class="kt-menu__link-text">Seleksi Beasiswa</span>
-											</a>
-										</li>
-
-										<li class="kt-menu__item @if(\Request::segment(2) == 'laporan' && \Request::segment(3) == 'tagihan-spi-spp') kt-menu__item--active @endif" aria-haspopup="true">
-											<a href="{{ null }}" class="kt-menu__link ">
-												<i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
-												<span class="kt-menu__link-text">Tagihan SPI-SPP</span>
-											</a>
-										</li>
-
-										<li class="kt-menu__item @if(\Request::segment(2) == 'laporan' && \Request::segment(3) == 'referral') kt-menu__item--active @endif" aria-haspopup="true">
-											<a href="{{ null }}" class="kt-menu__link ">
-												<i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
-												<span class="kt-menu__link-text">Referral</span>
-											</a>
-										</li>
-
-										<li class="kt-menu__item @if(\Request::segment(2) == 'laporan' && \Request::segment(3) == 'marketing') kt-menu__item--active @endif" aria-haspopup="true">
-											<a href="{{ null }}" class="kt-menu__link ">
-												<i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
-												<span class="kt-menu__link-text">Marketing</span>
-											</a>
-										</li>
-
-										<li class="kt-menu__item @if(\Request::segment(2) == 'laporan' && \Request::segment(3) == 'student-international') kt-menu__item--active @endif" aria-haspopup="true">
-											<a href="{{ null }}" class="kt-menu__link ">
-												<i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
-												<span class="kt-menu__link-text">Student Internasional</span>
-											</a>
-										</li>
-
-										<li class="kt-menu__item @if(\Request::segment(2) == 'laporan' && \Request::segment(3) == 'open-house') kt-menu__item--active @endif" aria-haspopup="true">
-											<a href="{{ null }}" class="kt-menu__link ">
-												<i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
-												<span class="kt-menu__link-text">Open House</span>
-											</a>
-										</li>
-
-										<li class="kt-menu__item @if(\Request::segment(2) == 'laporan' && \Request::segment(3) == 'webinar') kt-menu__item--active @endif" aria-haspopup="true">
-											<a href="{{ null }}" class="kt-menu__link ">
-												<i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
-												<span class="kt-menu__link-text">Webinar</span>
-											</a>
-										</li>
-									</ul>
-								</div>
-							</li>
-							@endif
-
-							<li class="kt-menu__item @if(\Request::segment(2) == 'tagihan') kt-menu__item--open kt-menu__item--here @endif kt-menu__item--submenu" aria-haspopup="true" data-ktmenu-submenu-toggle="hover">								
-								<a href="javascript:;" class="kt-menu__link kt-menu__toggle">
-									<i class="kt-menu__link-icon flaticon-coins"></i>
-									<span class="kt-menu__link-text">Tagihan</span>
-									<i class="kt-menu__ver-arrow la la-angle-right"></i>
-								</a>
-
-								<div class="kt-menu__submenu "><span class="kt-menu__arrow"></span>
-									<ul class="kt-menu__subnav">
-										<li class="kt-menu__item  kt-menu__item--parent" aria-haspopup="true">
-											<span class="kt-menu__link">
-												<span class="kt-menu__link-text">Tagihan</span>
-											</span>
-										</li>
-
-										<li class="kt-menu__item @if(\Request::segment(2) == 'tagihan' && \Request::segment(3) == 'camaba') kt-menu__item--active @endif" aria-haspopup="true">
-											<a href="{{ null }}" class="kt-menu__link ">
-												<i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
-												<span class="kt-menu__link-text">BNI</span>
-											</a>
-										</li>
-									</ul>
-								</div>
-							</li>
-
-							@if (auth()->user()->role ?? null == 'admin')
-							<li class="kt-menu__item @if(\Request::segment(2) == 'cms') kt-menu__item--active @endif" aria-haspopup="true">
-								<a href="{{ null }}" class="kt-menu__link ">
-									<span class="kt-menu__link-icon">
-										<i class="flaticon2-website"></i>
-									</span>
-									<span class="kt-menu__link-text">CMS Website</span>
-								</a>
-							</li>
-
-							{{-- <li class="kt-menu__item @if(\Request::segment(2) == 'media') kt-menu__item--active @endif" aria-haspopup="true">
-								<a href="{{ null }}" class="kt-menu__link ">
-									<span class="kt-menu__link-icon">
-										<i class="flaticon-folder"></i>
-									</span>
-									<span class="kt-menu__link-text">File Manager</span>
-								</a>
-							</li> --}}
-							@endif
 						</ul>
 					</div>
 				</div>
@@ -573,16 +197,7 @@
 										</a>
 									</li>
 								@endif
-								
-								@if (auth()->user()->role ?? null == 'admin')
-								<li class="kt-menu__item  @if(\Request::segment(2) == 'broadcasting') kt-menu__item--active  @endif" aria-haspopup="true">
-									<a href="{{ null }}" class="kt-menu__link ">
-										<span class="kt-menu__link-icon">
-											<i class="fa fa-bullhorn"></i>
-										</span>
-										<span class="kt-menu__link-text">Broadcasting</span>
-									</a>
-								</li>
+
 								<li class="kt-menu__item  kt-menu__item--submenu kt-menu__item--rel" data-ktmenu-submenu-toggle="click" aria-haspopup="true">
 									<a href="javascript:;" class="kt-menu__link kt-menu__toggle">
 										<span class="kt-menu__link-icon">
@@ -594,25 +209,12 @@
 									</a>
 									<div class="kt-menu__submenu kt-menu__submenu--classic kt-menu__submenu--left">
 										<ul class="kt-menu__subnav">
-											<li class="kt-menu__item " aria-haspopup="true"><a href="{{ null }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Jalur Masuk</span></a></li>
-											<li class="kt-menu__item " aria-haspopup="true"><a href="{{ null }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Jurusan SMK</span></a></li>
-											<!-- <li class="kt-menu__item " aria-haspopup="true"><a href="{{ null }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Dokumen Cicilan</span></a></li> -->
-											<li class="kt-menu__item " aria-haspopup="true"><a href="{{ null }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Referral</span></a></li>
-											<li class="kt-menu__item " aria-haspopup="true"><a href="{{ null }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Fakultas</span></a></li>
-											<li class="kt-menu__item " aria-haspopup="true"><a href="{{ null }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Program Studi</span></a></li>
-											<li class="kt-menu__item " aria-haspopup="true"><a href="{{ null }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">User</span></a></li>
-											<!-- <li class="kt-menu__item " aria-haspopup="true"><a href="{{ null }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Template Surat</span></a></li> -->
-											<!-- <li class="kt-menu__item " aria-haspopup="true"><a href="{{ null }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Eksternal Link</span></a></li> -->
-											{{-- <!-- <li class="kt-menu__item " aria-haspopup="true"><a href="{{ null }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Diskon</span></a></li> --> --}}
-											<li class="kt-menu__item " aria-haspopup="true"><a href="{{ null }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Kuota Prodi</span></a></li>
-											<li class="kt-menu__item " aria-haspopup="true"><a href="{{ null }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Passing Grade</span></a></li>
-											<li class="kt-menu__item " aria-haspopup="true"><a href="{{ null }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Target Camaba</span></a></li>
-											<li class="kt-menu__item " aria-haspopup="true"><a href="{{ null }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">User Camaba</span></a></li>
-											<li class="kt-menu__item " aria-haspopup="true"><a href="{{ null }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Kuesioner</span></a></li>
+											<li class="kt-menu__item " aria-haspopup="true"><a href="{{ null }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Konfigurasi 1</span></a></li>
+											<li class="kt-menu__item " aria-haspopup="true"><a href="{{ null }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Konfigurasi 2</span></a></li>
+											<li class="kt-menu__item " aria-haspopup="true"><a href="{{ null }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Konfigurasi 3</span></a></li>
 										</ul>
 									</div>
 								</li>
-								@endif
 							</ul>
 						</div>
 					</div>
@@ -624,9 +226,9 @@
 						<div class="kt-header__topbar-item align-items-center">
 							<div class="kt-header__topbar-wrapper">
 								<div class="dropdown dropdown-inline kt-margin-t-10 kt-margin-b-10">
-									<button type="button" class="btn btn-icon-sm dropdown-toggle text-light" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+									<button type="button" class="btn btn-icon-sm dropdown-toggle text-light" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 										<i class="flaticon2-user"></i>
-										{{ auth()->user()->name ?? '-' }}
+										{{ auth()->user()->name ?? 'John Doe' }}
 									</button>
 									<div class="dropdown-menu dropdown-menu-left" style="padding: 0;">
 										<ul class="kt-nav" style="width: 200px">
@@ -652,9 +254,11 @@
 					</div>
 					<!-- end:: Header Topbar -->
 				</div>
+
 				<div class="kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor">
 					@yield('content')
 				</div>
+
 				<div class="kt-footer kt-grid__item kt-grid kt-grid--desktop kt-grid--ver-desktop" id="kt_footer">
 					<div class="kt-footer__copyright">
 						{{ date('Y') }}&nbsp;©&nbsp;<a href="javascript:;" class="kt-link">{{ config('app.name') }}</a>
@@ -701,7 +305,8 @@
 	------------------------------ --}}
 	<!--begin:: Global Mandatory Vendors -->
 	<script src="{{ asset('assets/plugins/jquery/dist/jquery.min.js') }}" type="text/javascript"></script>
-	<script src="{{ asset('assets/plugins/popper.js/dist/umd/popper.min.js') }}" type="text/javascript"></script>
+	<!-- Popper v2 for Bootstrap 5 (required) -->
+	<script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.min.js" integrity="" crossorigin="anonymous"></script>
 	<script src="{{ asset('assets/plugins/bootstrap/js/bootstrap.min.js') }}" type="text/javascript"></script>
 	<script src="{{ asset('assets/plugins/js-cookie/src/js.cookie.js') }}" type="text/javascript"></script>
 	<script src="{{ asset('assets/plugins/moment/min/moment.min.js') }}" type="text/javascript"></script>
