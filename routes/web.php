@@ -16,7 +16,11 @@ Route::get('register', function () {
 
 Route::get('main', function () {
     return view('layouts.main');
-});
+})->name('main');
+
+Route::get('component', function () {
+    return view('components-showcase');
+})->name('components.showcase');
 
 // Testing route untuk error pages (hapus di production)
 if (config('app.debug')) {

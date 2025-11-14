@@ -41,7 +41,7 @@
 									</li>
 								@endif
 
-								{{-- <li class="kt-menu__item  kt-menu__item--submenu kt-menu__item--rel" data-ktmenu-submenu-toggle="click" aria-haspopup="true">
+								<li class="kt-menu__item  kt-menu__item--submenu kt-menu__item--rel" data-ktmenu-submenu-toggle="click" aria-haspopup="true">
 									<a href="javascript:;" class="kt-menu__link kt-menu__toggle">
 										<span class="kt-menu__link-icon">
 											<i class="flaticon2-settings"></i>
@@ -57,7 +57,7 @@
 											<li class="kt-menu__item " aria-haspopup="true"><a href="{{ null }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Konfigurasi 3</span></a></li>
 										</ul>
 									</div>
-								</li> --}}
+								</li>
 							</ul>
 						</div>
 					</div>
@@ -75,12 +75,12 @@
 									</button>
 									<div class="dropdown-menu dropdown-menu-left" style="padding: 0;">
 										<ul class="kt-nav" style="width: 200px">
-											{{-- <li class="kt-nav__item">
+											<li class="kt-nav__item">
 												<a href="{{ null }}" class="kt-nav__link">
 													<i class="kt-nav__link-icon la la-user kt-font-dark"></i>
 													<span class="kt-nav__link-text kt-font-dark">Profil</span>
 												</a>
-											</li> --}}
+											</li>
 
 											<li class="kt-nav__item">
 												<a href="{{ null }}" class="kt-nav__link">
