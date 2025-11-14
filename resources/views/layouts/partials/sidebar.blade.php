@@ -20,6 +20,13 @@
 							</a>
 						</li>
 
+						<li class="kt-menu__item  @if(Request::is('login*')) kt-menu__item--active @endif" aria-haspopup="true">
+							<a href="{{ route('login') }}" class="kt-menu__link ">
+								<i class="kt-menu__link-icon fa fa-sign-in"></i>
+								<span class="kt-menu__link-text">Halaman Login</span>
+							</a>
+						</li>
+
 						<li class="kt-menu__item @if(\Request::segment(2) == 'sub-menu') kt-menu__item--open kt-menu__item--here @endif kt-menu__item--submenu" aria-haspopup="true" data-ktmenu-submenu-toggle="hover">								
 							<a href="javascript::void(0);" class="kt-menu__link kt-menu__toggle">
 								<i class="kt-menu__link-icon flaticon2-menu"></i>
