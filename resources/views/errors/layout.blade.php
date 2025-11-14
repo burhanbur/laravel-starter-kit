@@ -433,7 +433,7 @@
         </div>
 
         <div class="error-footer">
-            © {{ date('Y') }} {{ config('app.name', 'Laravel') }} - Semua Hak Dilindungi
+            © {{ date('Y') }} {{ config('app.name', 'Laravel Starter Kit') }}
         </div>
     </div>
 
