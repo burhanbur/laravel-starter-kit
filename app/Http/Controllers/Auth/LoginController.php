@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
 class LoginController extends Controller
@@ -25,7 +26,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/dashboard';
 
     /**
      * Create a new controller instance.
@@ -38,8 +39,21 @@ class LoginController extends Controller
         $this->middleware('auth')->only('logout');
     }
 
-    public function showLoginForm()
+    public function username()
     {
-        return view('pages.login');
+        return 'identity';
+    }
+
+    protected function credentials(Request $request)
+    {
+        $identity = $request->input($this->username());
+        
+        // Check if identity is email or username
+        $field = filter_var($identity, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+        
+        return [
+            $field => $identity,
+            'password' => $request->input('password')
+        ];
     }
 }

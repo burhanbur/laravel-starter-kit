@@ -6,36 +6,99 @@ use App\Http\Controllers\MenuController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RouteController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\RoleMenuController;
+use App\Http\Controllers\RolePermissionController;
+use App\Http\Controllers\TenantController;
+use App\Http\Controllers\LocationController;
 
 Auth::routes();
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('component-ui', function() {
+    return view('components-showcase');
 });
 
-Route::get('login', function () {
-    return view('auth.login');
-})->name('login');
+Route::group(['middleware' => ['auth']], function () {
+    Route::get('/', [DashboardController::class, 'index'])->name('home');
+    Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-Route::get('register', function () {
-    return view('auth.register');
-})->name('register');
+    Route::get('logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');
+    Route::get('leave-impersonate', [UserController::class, 'leaveImpersonate'])->name('leave-impersonate');
 
-Route::get('main', function () {
-    return view('layouts.main');
-})->name('main');
+    Route::group(['middleware' => ['permission']], function () {
+        Route::get('impersonate/{user}', [UserController::class, 'impersonate'])->name('impersonate');
 
-Route::get('component', function () {
-    return view('components-showcase');
-})->name('components.showcase');
+        // ---------------------- Super Admin Routes ------------------ //
+        Route::group(['prefix' => 'user'], function () {
+            Route::get('/', [UserController::class, 'index'])->name('user.index');
+            Route::get('create', [UserController::class, 'create'])->name('user.create');
+            Route::get('edit/{id}', [UserController::class, 'edit'])->name('user.edit');
+            Route::get('change-password/{id}', [UserController::class, 'changePassword'])->name('user.change-password');
 
-// Testing route untuk error pages (hapus di production)
-if (config('app.debug')) {
-    Route::get('/test-error/{code}', function ($code) {
-        // Validate HTTP status code
-        if ($code < 100 || $code > 599) {
-            abort(400, 'Invalid HTTP status code. Must be between 100-599');
-        }
-        abort($code, 'This is a test error message');
-    })->where('code', '[0-9]+')->name('test.error');
-}
+            Route::post('/', [UserController::class, 'store'])->name('user.store');
+            Route::put('/{id}', [UserController::class, 'update'])->name('user.update');
+            Route::put('update-password/{id}', [UserController::class, 'updatePassword'])->name('user.update-password');
+            Route::delete('/{id}', [UserController::class, 'destroy'])->name('user.destroy');
+        });
+
+        Route::group(['prefix' => 'role'], function () {
+            Route::get('/', [RoleController::class, 'index'])->name('role.index');
+            Route::get('create', [RoleController::class, 'create'])->name('role.create');
+            Route::get('edit/{id}', [RoleController::class, 'edit'])->name('role.edit');
+            
+            // Role Menu Management
+            Route::get('menu/{id}', [RoleMenuController::class, 'show'])->name('role.menu.show');
+            Route::post('menu/{id}', [RoleMenuController::class, 'update'])->name('role.menu.update');
+            
+            // Role Permission Management
+            Route::get('permission/{id}', [RolePermissionController::class, 'show'])->name('role.permission.show');
+            Route::post('permission/{id}', [RolePermissionController::class, 'update'])->name('role.permission.update');
+
+            Route::post('/', [RoleController::class, 'store'])->name('role.store');
+            Route::put('/{id}', [RoleController::class, 'update'])->name('role.update');
+            Route::delete('/{id}', [RoleController::class, 'destroy'])->name('role.destroy');
+        });
+
+        Route::group(['prefix' => 'route'], function () {
+            Route::get('/', [RouteController::class, 'index'])->name('route.index');
+            Route::get('create', [RouteController::class, 'create'])->name('route.create');
+            Route::get('edit/{id}', [RouteController::class, 'edit'])->name('route.edit');
+
+            Route::post('/', [RouteController::class, 'store'])->name('route.store');
+            Route::put('/{id}', [RouteController::class, 'update'])->name('route.update');
+            Route::delete('/{id}', [RouteController::class, 'destroy'])->name('route.destroy');
+        });
+
+        Route::group(['prefix' => 'menu'], function () {
+            Route::get('/', [MenuController::class, 'index'])->name('menu.index');
+            Route::get('create', [MenuController::class, 'create'])->name('menu.create');
+            Route::get('edit/{id}', [MenuController::class, 'edit'])->name('menu.edit');
+
+            Route::post('/', [MenuController::class, 'store'])->name('menu.store');
+            Route::put('/{id}', [MenuController::class, 'update'])->name('menu.update');
+            Route::delete('/{id}', [MenuController::class, 'destroy'])->name('menu.destroy');
+        });
+
+
+        // ---------------------- Main Routes ------------------ //
+        Route::group(['prefix' => 'tenant'], function () {
+            Route::get('/', [TenantController::class, 'index'])->name('tenant.index');
+            Route::get('create', [TenantController::class, 'create'])->name('tenant.create');
+            Route::get('edit/{id}', [TenantController::class, 'edit'])->name('tenant.edit');
+
+            Route::post('/', [TenantController::class, 'store'])->name('tenant.store');
+            Route::put('/{id}', [TenantController::class, 'update'])->name('tenant.update');
+            Route::delete('/{id}', [TenantController::class, 'destroy'])->name('tenant.destroy');
+        });
+
+
+        Route::group(['prefix' => 'location'], function () {
+            Route::get('/', [LocationController::class, 'index'])->name('location.index');
+            Route::get('create', [LocationController::class, 'create'])->name('location.create');
+            Route::get('edit/{id}', [LocationController::class, 'edit'])->name('location.edit');
+
+            Route::post('/', [LocationController::class, 'store'])->name('location.store');
+            Route::put('/{id}', [LocationController::class, 'update'])->name('location.update');
+            Route::delete('/{id}', [LocationController::class, 'destroy'])->name('location.destroy');
+        });
+    });
+});

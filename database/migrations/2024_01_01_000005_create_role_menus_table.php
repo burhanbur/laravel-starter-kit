@@ -17,6 +17,7 @@ return new class extends Migration
             $table->char('role_id', 36);
             $table->char('menu_id', 36);
             $table->char('route_id', 36)->nullable();
+            $table->unsignedBigInteger('menu_type_id')->nullable()->default(1);
             $table->smallInteger('sequence')->default(0);
             $table->boolean('is_active')->default(true);
             $table->char('created_by', 36)->nullable();
@@ -27,6 +28,7 @@ return new class extends Migration
             $table->foreign('role_id')->references('id')->on('roles')->onDelete('cascade');
             $table->foreign('menu_id')->references('id')->on('menus')->onDelete('cascade');
             $table->foreign('route_id')->references('id')->on('routes')->onDelete('cascade');
+            $table->foreign('menu_type_id')->references('id')->on('menu_types')->onDelete('cascade');
         });
     }
 

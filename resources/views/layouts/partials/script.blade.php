@@ -31,6 +31,9 @@
 	<script src="{{ asset('assets/plugins/jquery/dist/jquery.min.js') }}" type="text/javascript"></script>
 	<!-- Popper v2 for Bootstrap 5 (required) -->
 	<script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.min.js" integrity="" crossorigin="anonymous"></script>
+	<!-- Select2 JS -->
+	<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
 	<script src="{{ asset('assets/plugins/bootstrap/js/bootstrap.min.js') }}" type="text/javascript"></script>
 	<script src="{{ asset('assets/plugins/js-cookie/src/js.cookie.js') }}" type="text/javascript"></script>
 	<script src="{{ asset('assets/plugins/moment/min/moment.min.js') }}" type="text/javascript"></script>
@@ -52,19 +55,42 @@
 		$('.number-format').keyup(function () {
 			this.value = this.value.replace(/[^0-9\.]/g,'');
 		});
+
+		$('.select2-format').select2();
 	</script>
 	<script>
 		@if(Session::has('notification'))
-		swal.fire({
-			title: '{{ Session::get('notification.message') }}',
-			@if(Session::get('notification.longMessage'))
-			text: '{{ Session::get('notification.longMessage') }}',
+			@if(Session::get('notification.toast', false))
+				// Toast Mode
+				const Toast = swal.mixin({
+					toast: true,
+					position: '{{ Session::get('notification.position', 'top-end') }}',
+					showConfirmButton: false,
+					timer: {{ Session::get('notification.timer', '3000') }},
+					timerProgressBar: true,
+					didOpen: (toast) => {
+						toast.addEventListener('mouseenter', swal.stopTimer)
+						toast.addEventListener('mouseleave', swal.resumeTimer)
+					}
+				});
+
+				Toast.fire({
+					icon: '{{ Session::get('notification.level', 'info') }}',
+					title: '{{ Session::get('notification.message') }}'
+				});
+			@else
+				// Modal Mode
+				swal.fire({
+					title: '{{ Session::get('notification.message') }}',
+					@if(Session::get('notification.longMessage'))
+					text: '{{ Session::get('notification.longMessage') }}',
+					@endif
+					type: '{{ Session::get('notification.level', 'info') }}',
+					showConfirmButton: {{ Session::get('notification.showConfirmButton', 'true') }},
+					@if(Session::get('notification.timer'))
+					timer: {{ Session::get('notification.timer', '1800') }}
+					@endif
+				});
 			@endif
-			type: '{{ Session::get('notification.level', 'info') }}',
-			showConfirmButton: '{{ Session::get('notification.showConfirmButton', 'true') }}',
-			@if(Session::get('notification.timer'))
-			timer: '{{ Session::get('notification.timer', '1800') }}'
-			@endif
-		});
 		@endif
 	</script>

@@ -29,8 +29,8 @@ class RoleSeeder extends Seeder
                 'updated_by' => null,
             ],
             [
-                'code' => 'USR',
-                'name' => 'User',
+                'code' => 'ME',
+                'name' => 'Mechanical Engineer',
                 'created_by' => null,
                 'updated_by' => null,
             ],

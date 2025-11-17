@@ -21,8 +21,8 @@
 					<div class="kt-header-menu-wrapper kt-grid__item kt-grid__item--fluid" id="kt_header_menu_wrapper">
 						<div id="kt_header_menu" class="kt-header-menu kt-header-menu-mobile  kt-header-menu--layout-default ">
 							<ul class="kt-menu__nav ">
-								<li class="kt-menu__item  @if(\Request::segment(2) == '') kt-menu__item--active  @endif" aria-haspopup="true">
-									<a href="{{ null }}" class="kt-menu__link ">
+								<li class="kt-menu__item  @if(in_array(\Request::segment(1), ['', 'dashboard'])) kt-menu__item--active  @endif" aria-haspopup="true">
+									<a href="{{ route('dashboard') }}" class="kt-menu__link ">
 										<span class="kt-menu__link-icon">
 											<i class="flaticon2-dashboard"></i>
 										</span>
@@ -30,9 +30,56 @@
 									</a>
 								</li>
 
+								@foreach ($menus['topbar'] as $key => $menu)
+									@if (empty($menu->children) || count($menu->children) == 0)
+										{{-- Standalone menu without children --}}
+										<li class="kt-menu__item  @if(Request::route()->getName() == $menu->route_name) kt-menu__item--active  @endif" aria-haspopup="true">
+											<a href="{{ $menu->route_name ? route($menu->route_name) : 'javascript:void(0);' }}" class="kt-menu__link ">
+												<span class="kt-menu__link-icon">
+													<i class="{{ $menu->icon ?? 'fa fa-dot-circle' }}"></i>
+												</span>
+												<span class="kt-menu__link-text">{{ $menu->name }}</span>
+											</a>
+										</li>
+									@else
+										{{-- Parent menu with children --}}
+										@php
+											$hasActiveChild = false;
+											foreach ($menu->children as $child) {
+												if (Request::route()->getName() == $child->route_name) {
+													$hasActiveChild = true;
+													break;
+												}
+											}
+										@endphp
+										<li class="kt-menu__item  kt-menu__item--submenu kt-menu__item--rel @if($hasActiveChild || Request::route()->getName() == $menu->route_name) kt-menu__item--active kt-menu__item--here @endif" data-ktmenu-submenu-toggle="click" aria-haspopup="true">
+											<a href="javascript:void(0);" class="kt-menu__link kt-menu__toggle">
+												<span class="kt-menu__link-icon">
+													<i class="{{ $menu->icon ?? 'flaticon2-menu' }}"></i>
+												</span>
+												<span class="kt-menu__link-text">{{ $menu->name }}</span>
+												<i class="kt-menu__hor-arrow la la-angle-down"></i>
+												<i class="kt-menu__ver-arrow la la-angle-right"></i>
+											</a>
+											<div class="kt-menu__submenu kt-menu__submenu--classic kt-menu__submenu--left">
+												<ul class="kt-menu__subnav">
+													@foreach ($menu->children as $subMenu)
+														<li class="kt-menu__item @if(Request::route()->getName() == $subMenu->route_name) kt-menu__item--active @endif" aria-haspopup="true">
+															<a href="{{ $subMenu->route_name ? route($subMenu->route_name) : 'javascript:void(0);' }}" class="kt-menu__link ">
+																<i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
+																<span class="kt-menu__link-text">{{ $subMenu->name }}</span>
+															</a>
+														</li>
+													@endforeach
+												</ul>
+											</div>
+										</li>
+									@endif
+								@endforeach
+
 								@if(session('impersonated_by'))
 									<li class="kt-menu__item" aria-haspopup="true">
-										<a href="{{ null }}" class="kt-menu__link">
+										<a href="{{ route('leave-impersonate') }}" class="kt-menu__link">
 											<span class="kt-menu__link-icon">
 												<i class="fa fa-user-slash"></i>
 											</span>
@@ -41,7 +88,7 @@
 									</li>
 								@endif
 
-								<li class="kt-menu__item  kt-menu__item--submenu kt-menu__item--rel" data-ktmenu-submenu-toggle="click" aria-haspopup="true">
+								{{-- <li class="kt-menu__item  kt-menu__item--submenu kt-menu__item--rel" data-ktmenu-submenu-toggle="click" aria-haspopup="true">
 									<a href="javascript:;" class="kt-menu__link kt-menu__toggle">
 										<span class="kt-menu__link-icon">
 											<i class="flaticon2-settings"></i>
@@ -57,7 +104,7 @@
 											<li class="kt-menu__item " aria-haspopup="true"><a href="{{ null }}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Konfigurasi 3</span></a></li>
 										</ul>
 									</div>
-								</li>
+								</li> --}}
 							</ul>
 						</div>
 					</div>
@@ -75,15 +122,15 @@
 									</button>
 									<div class="dropdown-menu dropdown-menu-left" style="padding: 0;">
 										<ul class="kt-nav" style="width: 200px">
-											<li class="kt-nav__item">
+											{{-- <li class="kt-nav__item">
 												<a href="{{ null }}" class="kt-nav__link">
 													<i class="kt-nav__link-icon la la-user kt-font-dark"></i>
 													<span class="kt-nav__link-text kt-font-dark">Profil</span>
 												</a>
-											</li>
+											</li> --}}
 
 											<li class="kt-nav__item">
-												<a href="{{ null }}" class="kt-nav__link">
+												<a href="{{ route('logout') }}" class="kt-nav__link">
 													<i class="kt-nav__link-icon la la-sign-out kt-font-dark"></i>
 													<span class="kt-nav__link-text kt-font-dark">Logout</span>
 												</a>

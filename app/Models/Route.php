@@ -19,7 +19,8 @@ class Route extends Model
     protected $fillable = [
         'name',
         'method',
-        'endpoint',
+        'module',
+        'description',
         'deleted_by',
         'created_by',
         'updated_by',
@@ -50,5 +51,23 @@ class Route extends Model
     {
         return $this->belongsToMany(Role::class, 'role_permissions', 'route_id', 'role_id')
                     ->withTimestamps();
+    }
+
+    /**
+     * Get badge color class based on HTTP method
+     *
+     * @param string $method
+     * @return string
+     */
+    public static function getMethodBadgeColor($method)
+    {
+        return match(strtoupper($method)) {
+            'GET' => 'badge-primary',
+            'POST' => 'badge-success',
+            'PUT' => 'badge-warning',
+            'PATCH' => 'badge-info',
+            'DELETE' => 'badge-danger',
+            default => 'badge-secondary',
+        };
     }
 }

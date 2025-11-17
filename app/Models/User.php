@@ -77,6 +77,11 @@ class User extends Authenticatable implements JWTSubject
         });
     }
 
+    public function hasChild()
+    {
+        return false;
+    }
+
     /**
      * Get the roles for the user.
      */
@@ -84,6 +89,11 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->belongsToMany(Role::class, 'user_roles', 'user_id', 'role_id')
                     ->withTimestamps();
+    }
+
+    public function belongToRoles()
+    {
+        return $this->hasMany(UserRole::class, 'user_id');
     }
 
     /**
@@ -308,7 +318,7 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
-    public function getRolesAttribute()
+    public function getRoleIdsAttribute()
     {
         return $this->roles()->pluck('id')->toArray();
     }

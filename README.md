@@ -83,10 +83,9 @@ Dependensi production (ringkasan dari `composer.json`):
 - `simplesoftwareio/simple-qrcode` — QR code generator
 - `tymon/jwt-auth` — JWT auth
 - `yajra/laravel-datatables-oracle` — server-side datatables
-- `spatie/laravel-permission` — roles & permissions
 
 Dependensi development (ringkasan):
-
+- `barryvdh/laravel-debugbar` — debugbar
 - `fakerphp/faker` — test data
 - `laravel/pint` — code formatter (Pint)
 - `phpunit/phpunit` — unit/integration tests

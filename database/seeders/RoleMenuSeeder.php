@@ -55,23 +55,6 @@ class RoleMenuSeeder extends Seeder
             }
         }
 
-        // Manajemen Peran menu
-        if ($roles && $rolesIndexRoute) {
-            foreach ($rolesIndexRoute as $route) {
-                RoleMenu::create([
-                    'parent_id' => null,
-                    'role_id' => $superadminRole->id,
-                    'menu_id' => $roles->id,
-                    'route_id' => $route->id,
-                    'sequence' => 2,
-                    'is_active' => true,
-                    'created_by' => null,
-                    'updated_by' => null,
-                ]);
-                break;
-            }
-        }
-
         // Manajemen Menu menu
         if ($menus && $menusIndexRoute) {
             foreach ($menusIndexRoute as $route) {
@@ -80,7 +63,7 @@ class RoleMenuSeeder extends Seeder
                     'role_id' => $superadminRole->id,
                     'menu_id' => $menus->id,
                     'route_id' => $route->id,
-                    'sequence' => 3,
+                    'sequence' => 2,
                     'is_active' => true,
                     'created_by' => null,
                     'updated_by' => null,
@@ -96,6 +79,23 @@ class RoleMenuSeeder extends Seeder
                     'parent_id' => null,
                     'role_id' => $superadminRole->id,
                     'menu_id' => $routes->id,
+                    'route_id' => $route->id,
+                    'sequence' => 3,
+                    'is_active' => true,
+                    'created_by' => null,
+                    'updated_by' => null,
+                ]);
+                break;
+            }
+        }
+
+        // Manajemen Peran menu
+        if ($roles && $rolesIndexRoute) {
+            foreach ($rolesIndexRoute as $route) {
+                RoleMenu::create([
+                    'parent_id' => null,
+                    'role_id' => $superadminRole->id,
+                    'menu_id' => $roles->id,
                     'route_id' => $route->id,
                     'sequence' => 4,
                     'is_active' => true,

@@ -36,13 +36,13 @@ class MenuSeeder extends Seeder
             ],
             [
                 'name' => 'Manajemen Menu',
-                'icon' => 'flaticon2-menu',
+                'icon' => 'flaticon2-list-2',
                 'created_by' => null,
                 'updated_by' => null,
             ],
             [
                 'name' => 'Manajemen Route',
-                'icon' => 'flaticon2-zig-zag-line-sign',
+                'icon' => 'flaticon2-layers-1',
                 'created_by' => null,
                 'updated_by' => null,
             ],

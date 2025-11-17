@@ -69,5 +69,9 @@
 	<link href="{{ asset('assets/css/demo1/skins/brand/light.min.css') }}" rel="stylesheet" type="text/css" />
 	<link href="{{ asset('assets/css/demo1/skins/aside/light.min.css') }}" rel="stylesheet" type="text/css" />
 	<!--begin::Page Custom Styles(used by this page) -->
+	<!-- Select2 CSS - Load default first, then custom -->
+	<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+	<link href="{{ asset('assets/css/select2.css') }}" rel="stylesheet" type="text/css" />
+	
 	<link href="{{ asset('assets/css/custom-main.css') }}" rel="stylesheet" type="text/css" />
 	<link rel="stylesheet" href="{{ asset('assets/custom/config.css') }}">

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->char('id', 36)->primary();
             $table->string('name');
             $table->string('method');
+            $table->text('description')->nullable();
             $table->string('module')->nullable();
             $table->char('deleted_by', 36)->nullable();
             $table->char('created_by', 36)->nullable();

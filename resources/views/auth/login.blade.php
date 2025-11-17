@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Login — Laravel Starter Kit</title>
+    <title>{{ config('app.alias') }} | Login</title>
     <link rel="icon" href="{{ asset('assets/images/favicon.svg') }}" type="image/svg+xml">
     <link rel="alternate icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
 
@@ -27,31 +27,31 @@
         </div>
 
         <div class="form-section">
-            <form method="POST" action="#" id="loginForm" novalidate>
+            <form method="POST" action="{{ route('login') }}" id="loginForm" novalidate>
                 @csrf
 
                 <div class="mb-4">
                     <label for="email" class="form-label">Email</label>
                     <div class="input-group">
                         <span class="input-group-text input-icon">
-                            <i class="fa-regular fa-envelope" aria-hidden="true"></i>
+                            <i class="fa-regular fa-user" aria-hidden="true"></i>
                         </span>
                         <input 
-                            type="email" 
-                            class="form-control @error('email') is-invalid @enderror" 
-                            id="email" 
-                            name="email" 
-                            placeholder="nama@example.com" 
+                            type="text" 
+                            class="form-control @error('identity') is-invalid @enderror" 
+                            id="identity" 
+                            name="identity" 
+                            placeholder="Masukkan email atau username Anda" 
                             required 
-                            value="{{ old('email') ?? '' }}"
+                            value="{{ old('identity') ?? '' }}"
                             style="border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-right: 1px solid var(--border);"
                         >
                     </div>
-                    @error('email')
+                    @error('identity')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                     @enderror
-                    <div class="invalid-feedback d-none" id="emailClientError">
-                        <i class="fa-solid fa-circle-exclamation me-1"></i>Masukkan alamat email yang valid
+                    <div class="invalid-feedback d-none" id="">
+                        <i class="fa-solid fa-circle-exclamation me-1"></i>Masukkan alamat email atau username yang valid
                     </div>
                 </div>
 
@@ -85,7 +85,7 @@
                             Ingat saya
                         </label>
                     </div>
-                    <a href="#" style="font-size: 14px;">Lupa password?</a>
+                    {{-- <a href="#" style="font-size: 14px;">Lupa password?</a> --}}
                 </div>
 
                 <div class="d-grid mb-4">
@@ -100,21 +100,16 @@
                 </div>
 
                 <div class="row g-2 mb-4">
-                    <div class="col-6">
+                    <div class="col-12">
                         <button type="button" class="btn social-btn w-100">
-                            <i class="fab fa-google me-2" style="color: #DB4437;"></i>Google
-                        </button>
-                    </div>
-                    <div class="col-6">
-                        <button type="button" class="btn social-btn w-100">
-                            <i class="fab fa-github me-2" style="color: #333;"></i>GitHub
+                            <i class="fa fa-key me-2" style="color: var(--primary);"></i>SSO
                         </button>
                     </div>
                 </div>
 
-                <div class="text-center" style="color: var(--text-muted); font-size: 14px;">
+                {{-- <div class="text-center" style="color: var(--text-muted); font-size: 14px;">
                     Belum punya akun? <a href="#">Daftar sekarang</a>
-                </div>
+                </div> --}}
             </form>
         </div>
     </div>
@@ -178,7 +173,8 @@
                 }
 
                 // Enable/disable submit button
-                const canSubmit = emailVal.length > 0 && passVal.length > 0 && emailValid;
+                // const canSubmit = emailVal.length > 0 && passVal.length > 0 && emailValid;
+                const canSubmit = true;
                 $submit.prop('disabled', !canSubmit);
             }
 
@@ -191,24 +187,9 @@
 
             // Form submission with loading state
             $('#loginForm').on('submit', function(e){
-                // In real app, you'd validate before preventing default
-                // For demo purposes without route, we prevent submission
-                e.preventDefault();
-                
                 $submit.prop('disabled', true);
                 $spinner.removeClass('d-none');
                 $submitText.text('Memproses...');
-                
-                // Simulate loading (remove this in production)
-                setTimeout(function(){
-                    // Show success message or redirect
-                    alert('Form siap untuk dikirim! Dalam production, form akan disubmit ke server.');
-                    
-                    // Reset button state
-                    $submit.prop('disabled', false);
-                    $spinner.addClass('d-none');
-                    $submitText.text('Masuk Sekarang');
-                }, 2000);
             });
 
             // Add ripple effect to buttons (optional enhancement)

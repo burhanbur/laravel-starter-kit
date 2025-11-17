@@ -20,6 +20,7 @@ class RoleMenu extends Model
         'role_id',
         'menu_id',
         'route_id',
+        'menu_type_id',
         'sequence',
         'is_active',
         'created_by',
@@ -80,5 +81,13 @@ class RoleMenu extends Model
     public function route()
     {
         return $this->belongsTo(Route::class, 'route_id');
+    }
+
+    /**
+     * Get the menu type that owns the role menu.
+     */
+    public function menuType()
+    {
+        return $this->belongsTo(MenuType::class, 'menu_type_id');
     }
 }
