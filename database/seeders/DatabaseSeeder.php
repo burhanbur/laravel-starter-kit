@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
                 RouteSeeder::class,
                 MenuSeeder::class,
                 RoleMenuSeeder::class,
+                RolePermissionSeeder::class,
             ]);
 
             DB::commit();

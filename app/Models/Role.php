@@ -54,4 +54,10 @@ class Role extends Model
     {
         return $this->hasMany(RoleMenu::class, 'role_id');
     }
+
+    public function permissions()
+    {
+        return $this->belongsToMany(Route::class, 'role_permissions', 'role_id', 'route_id')
+                    ->withTimestamps();
+    }
 }

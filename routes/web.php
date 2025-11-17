@@ -1,6 +1,13 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\MenuController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\RouteController;
+use App\Http\Controllers\RoleController;
+
+Auth::routes();
 
 Route::get('/', function () {
     return view('welcome');

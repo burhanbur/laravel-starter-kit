@@ -22,7 +22,7 @@ class UserPermission
         $user = $request->user();
 
         // Rute yang boleh diakses tanpa pengecekan role
-        $excludedRoutes = ['home'];
+        $excludedRoutes = ['home', 'dashboard'];
 
         if (in_array($route, $excludedRoutes)) {
             return $next($request);
@@ -31,31 +31,20 @@ class UserPermission
         // Ambil daftar role yang boleh mengakses rute ini
         $sql = "
             SELECT role.name as role 
-            FROM role_menus AS rm 
-            JOIN routes AS route ON route.id = rm.route_id 
-            JOIN roles AS role ON role.id = rm.role_id
-            WHERE route.name = ?
+            FROM role_permissions AS rp 
+            JOIN routes AS route ON route.id = rp.route_id 
+            JOIN roles AS role ON role.id = rp.role_id 
+            JOIN user_roles AS ur ON ur.role_id = role.id 
+            WHERE ur.user_id = ? AND route.name = ?
         ";
 
-        $roles = DB::select($sql, [$route]);
+        $roles = DB::select($sql, [$user->id, $route]);
 
         if (empty($roles)) {
             Log::warning("Rute '$route' tidak ditemukan dalam database.");
             return abort(403, 'Route access is not defined.');
         }
 
-        // Ubah daftar role dari hasil query ke dalam array
-        $allowedRoles = array_map(function($r) {
-            return $r->role;
-        }, $roles);
-
-        // Cek apakah user memiliki salah satu role yang diperbolehkan
-        if (!$user->hasAnyRole($allowedRoles)) {
-            Log::warning("User ID {$user->id} tidak memiliki akses ke rute '$route'.");
-            return abort(403, 'You are not authorized to access this page.');
-        }
-
         return $next($request);
     }
-
 }

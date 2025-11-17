@@ -16,6 +16,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'cors' => App\Http\Middleware\Cors::class,
             'custom.jwt.auth' => App\Http\Middleware\JwtAuthenticate::class,
+            'permission' => App\Http\Middleware\UserPermission::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

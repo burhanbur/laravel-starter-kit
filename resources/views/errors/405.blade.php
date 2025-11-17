@@ -27,7 +27,7 @@
 
 @section('debug')
     <strong>Request Method:</strong> {{ request()->method() }}<br>
-    <strong>Allowed Methods:</strong> {{ isset($exception) && method_exists($exception, 'getHeaders') ? implode(', ', $exception->getHeaders()['Allow'] ?? []) : 'Unknown' }}<br>
+    <strong>Allowed Methods:</strong> {{ isset($exception) && method_exists($exception, 'getHeaders') ? (is_array($allow = $exception->getHeaders()['Allow'] ?? []) ? implode(', ', $allow) : $allow) : 'Unknown' }}<br>
     <strong>Request URL:</strong> {{ request()->fullUrl() }}<br>
     <strong>Route Name:</strong> {{ request()->route()?->getName() ?? 'N/A' }}
 @endsection

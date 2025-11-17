@@ -16,53 +16,44 @@ class RouteSeeder extends Seeder
         DB::table('routes')->delete();
 
         $routes = [
-            // Dashboard
-            [
-                'name' => 'dashboard.index',
-                'method' => 'GET',
-                'module' => 'Dashboard',
-                'created_by' => null,
-                'updated_by' => null,
-            ],
-            
             // Users
             [
-                'name' => 'users.index',
+                'name' => 'user.index',
                 'method' => 'GET',
                 'module' => 'Users',
                 'created_by' => null,
                 'updated_by' => null,
             ],
             [
-                'name' => 'users.create',
+                'name' => 'user.create',
                 'method' => 'GET',
                 'module' => 'Users',
                 'created_by' => null,
                 'updated_by' => null,
             ],
             [
-                'name' => 'users.store',
+                'name' => 'user.store',
                 'method' => 'POST',
                 'module' => 'Users',
                 'created_by' => null,
                 'updated_by' => null,
             ],
             [
-                'name' => 'users.edit',
+                'name' => 'user.edit',
                 'method' => 'GET',
                 'module' => 'Users',
                 'created_by' => null,
                 'updated_by' => null,
             ],
             [
-                'name' => 'users.update',
+                'name' => 'user.update',
                 'method' => 'PUT',
                 'module' => 'Users',
                 'created_by' => null,
                 'updated_by' => null,
             ],
             [
-                'name' => 'users.destroy',
+                'name' => 'user.destroy',
                 'method' => 'DELETE',
                 'module' => 'Users',
                 'created_by' => null,
@@ -71,42 +62,42 @@ class RouteSeeder extends Seeder
 
             // Roles
             [
-                'name' => 'roles.index',
+                'name' => 'role.index',
                 'method' => 'GET',
                 'module' => 'Roles',
                 'created_by' => null,
                 'updated_by' => null,
             ],
             [
-                'name' => 'roles.create',
+                'name' => 'role.create',
                 'method' => 'GET',
                 'module' => 'Roles',
                 'created_by' => null,
                 'updated_by' => null,
             ],
             [
-                'name' => 'roles.store',
+                'name' => 'role.store',
                 'method' => 'POST',
                 'module' => 'Roles',
                 'created_by' => null,
                 'updated_by' => null,
             ],
             [
-                'name' => 'roles.edit',
+                'name' => 'role.edit',
                 'method' => 'GET',
                 'module' => 'Roles',
                 'created_by' => null,
                 'updated_by' => null,
             ],
             [
-                'name' => 'roles.update',
+                'name' => 'role.update',
                 'method' => 'PUT',
                 'module' => 'Roles',
                 'created_by' => null,
                 'updated_by' => null,
             ],
             [
-                'name' => 'roles.destroy',
+                'name' => 'role.destroy',
                 'method' => 'DELETE',
                 'module' => 'Roles',
                 'created_by' => null,
@@ -115,42 +106,42 @@ class RouteSeeder extends Seeder
 
             // Menus
             [
-                'name' => 'menus.index',
+                'name' => 'menu.index',
                 'method' => 'GET',
                 'module' => 'Menus',
                 'created_by' => null,
                 'updated_by' => null,
             ],
             [
-                'name' => 'menus.create',
+                'name' => 'menu.create',
                 'method' => 'GET',
                 'module' => 'Menus',
                 'created_by' => null,
                 'updated_by' => null,
             ],
             [
-                'name' => 'menus.store',
+                'name' => 'menu.store',
                 'method' => 'POST',
                 'module' => 'Menus',
                 'created_by' => null,
                 'updated_by' => null,
             ],
             [
-                'name' => 'menus.edit',
+                'name' => 'menu.edit',
                 'method' => 'GET',
                 'module' => 'Menus',
                 'created_by' => null,
                 'updated_by' => null,
             ],
             [
-                'name' => 'menus.update',
+                'name' => 'menu.update',
                 'method' => 'PUT',
                 'module' => 'Menus',
                 'created_by' => null,
                 'updated_by' => null,
             ],
             [
-                'name' => 'menus.destroy',
+                'name' => 'menu.destroy',
                 'method' => 'DELETE',
                 'module' => 'Menus',
                 'created_by' => null,
@@ -159,42 +150,42 @@ class RouteSeeder extends Seeder
 
             // Routes
             [
-                'name' => 'routes.index',
+                'name' => 'route.index',
                 'method' => 'GET',
                 'module' => 'Routes',
                 'created_by' => null,
                 'updated_by' => null,
             ],
             [
-                'name' => 'routes.create',
+                'name' => 'route.create',
                 'method' => 'GET',
                 'module' => 'Routes',
                 'created_by' => null,
                 'updated_by' => null,
             ],
             [
-                'name' => 'routes.store',
+                'name' => 'route.store',
                 'method' => 'POST',
                 'module' => 'Routes',
                 'created_by' => null,
                 'updated_by' => null,
             ],
             [
-                'name' => 'routes.edit',
+                'name' => 'route.edit',
                 'method' => 'GET',
                 'module' => 'Routes',
                 'created_by' => null,
                 'updated_by' => null,
             ],
             [
-                'name' => 'routes.update',
+                'name' => 'route.update',
                 'method' => 'PUT',
                 'module' => 'Routes',
                 'created_by' => null,
                 'updated_by' => null,
             ],
             [
-                'name' => 'routes.destroy',
+                'name' => 'route.destroy',
                 'method' => 'DELETE',
                 'module' => 'Routes',
                 'created_by' => null,
