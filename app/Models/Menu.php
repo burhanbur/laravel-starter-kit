@@ -32,7 +32,7 @@ class Menu extends Model
         
         static::creating(function ($menu) {
             if (empty($menu->id)) {
-                $menu->id = (string) Str::uuid();
+                $menu->id = (string) uuidv7();
             }
         });
     }

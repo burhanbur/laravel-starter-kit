@@ -8,8 +8,6 @@ use App\Http\Controllers\RouteController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\RoleMenuController;
 use App\Http\Controllers\RolePermissionController;
-use App\Http\Controllers\TenantController;
-use App\Http\Controllers\LocationController;
 
 Auth::routes();
 
@@ -76,29 +74,6 @@ Route::group(['middleware' => ['auth']], function () {
             Route::post('/', [MenuController::class, 'store'])->name('menu.store');
             Route::put('/{id}', [MenuController::class, 'update'])->name('menu.update');
             Route::delete('/{id}', [MenuController::class, 'destroy'])->name('menu.destroy');
-        });
-
-
-        // ---------------------- Main Routes ------------------ //
-        Route::group(['prefix' => 'tenant'], function () {
-            Route::get('/', [TenantController::class, 'index'])->name('tenant.index');
-            Route::get('create', [TenantController::class, 'create'])->name('tenant.create');
-            Route::get('edit/{id}', [TenantController::class, 'edit'])->name('tenant.edit');
-
-            Route::post('/', [TenantController::class, 'store'])->name('tenant.store');
-            Route::put('/{id}', [TenantController::class, 'update'])->name('tenant.update');
-            Route::delete('/{id}', [TenantController::class, 'destroy'])->name('tenant.destroy');
-        });
-
-
-        Route::group(['prefix' => 'location'], function () {
-            Route::get('/', [LocationController::class, 'index'])->name('location.index');
-            Route::get('create', [LocationController::class, 'create'])->name('location.create');
-            Route::get('edit/{id}', [LocationController::class, 'edit'])->name('location.edit');
-
-            Route::post('/', [LocationController::class, 'store'])->name('location.store');
-            Route::put('/{id}', [LocationController::class, 'update'])->name('location.update');
-            Route::delete('/{id}', [LocationController::class, 'destroy'])->name('location.destroy');
         });
     });
 });

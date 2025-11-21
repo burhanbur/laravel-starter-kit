@@ -7,6 +7,13 @@ if (!function_exists('isProduction')) {
     }
 }
 
+if (!function_exists('isStaging')) {
+    function isStaging(): bool
+    {
+        return app()->environment('staging') || app()->environment('stage') || app()->environment('dev') || app()->environment('development');
+    }
+}
+
 if (!function_exists('camelToSnakeCase')) {
     function camelToSnakeCase($input)
     {
@@ -243,5 +250,74 @@ if (!function_exists('cleanString')) {
         $value = preg_replace('/[\x{200B}-\x{200F}\x{202A}-\x{202E}]/u', '', $value);
 
         return $value;
+    }
+}
+
+if (!function_exists('uuidv7')) {
+    function uuidv7() 
+    {
+        // Unix epoch timestamp in milliseconds (48 bits)
+        $unixTimeMs = (int) floor(microtime(true) * 1000);
+
+        // Convert timestamp to 48-bit hex
+        $timeHex = str_pad(dechex($unixTimeMs), 12, '0', STR_PAD_LEFT);
+
+        // Random bits
+        $randA = random_int(0, 0x0fff);      // 12 bits
+        $randB = random_int(0, 0x3fff);      // 14 bits
+        $randC = random_int(0, 0xffff);      // 16 bits
+        $randD = random_int(0, 0xffffffff);  // 32 bits
+
+        // Apply version: 0x7xxx
+        $version = dechex(0x7000 | $randA);  
+
+        // Apply variant: 0b10xxxxxx xxxx....
+        $variant = dechex(0x8000 | $randB);
+
+        // Format: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+        return sprintf(
+            '%s-%s-%s-%s-%s%08x',
+            substr($timeHex, 0, 8),        // time high
+            substr($timeHex, 8, 4),        // time low
+            $version,                      // version + randomness
+            $variant,                      // variant + randomness
+            str_pad(dechex($randC), 4, '0', STR_PAD_LEFT),
+            $randD
+        );
+    }
+}
+
+if (!function_exists('numberToWords')) {
+    function numberToWords($number)
+    {
+        $number = abs($number);
+        $words = [
+            '', 'satu', 'dua', 'tiga', 'empat', 'lima', 'enam', 'tujuh', 'delapan', 'sembilan',
+            'sepuluh', 'sebelas'
+        ];
+
+        if ($number < 12) {
+            return $words[$number];
+        } elseif ($number < 20) {
+            return numberToWords($number - 10) . ' belas';
+        } elseif ($number < 100) {
+            return numberToWords(floor($number / 10)) . ' puluh ' . numberToWords($number % 10);
+        } elseif ($number < 200) {
+            return 'seratus ' . numberToWords($number - 100);
+        } elseif ($number < 1000) {
+            return numberToWords(floor($number / 100)) . ' ratus ' . numberToWords($number % 100);
+        } elseif ($number < 2000) {
+            return 'seribu ' . numberToWords($number - 1000);
+        } elseif ($number < 1000000) {
+            return numberToWords(floor($number / 1000)) . ' ribu ' . numberToWords($number % 1000);
+        } elseif ($number < 1000000000) {
+            return numberToWords(floor($number / 1000000)) . ' juta ' . numberToWords($number % 1000000);
+        } elseif ($number < 1000000000000) {
+            return numberToWords(floor($number / 1000000000)) . ' miliar ' . numberToWords($number % 1000000000);
+        } elseif ($number < 1000000000000000) {
+            return numberToWords(floor($number / 1000000000000)) . ' triliun ' . numberToWords($number % 1000000000000);
+        }
+
+        return 'angka terlalu besar';
     }
 }

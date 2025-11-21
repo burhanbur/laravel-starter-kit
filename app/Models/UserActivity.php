@@ -31,7 +31,7 @@ class UserActivity extends Model
         
         static::creating(function ($activity) {
             if (empty($activity->id)) {
-                $activity->id = (string) Str::uuid();
+                $activity->id = (string) uuidv7();
             }
         });
     }

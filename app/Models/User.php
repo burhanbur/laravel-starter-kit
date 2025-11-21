@@ -72,7 +72,7 @@ class User extends Authenticatable implements JWTSubject
         
         static::creating(function ($user) {
             if (empty($user->id)) {
-                $user->id = (string) Str::uuid();
+                $user->id = (string) uuidv7();
             }
         });
     }

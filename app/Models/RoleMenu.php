@@ -38,7 +38,7 @@ class RoleMenu extends Model
         
         static::creating(function ($roleMenu) {
             if (empty($roleMenu->id)) {
-                $roleMenu->id = (string) Str::uuid();
+                $roleMenu->id = (string) uuidv7();
             }
         });
     }

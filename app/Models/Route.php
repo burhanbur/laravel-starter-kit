@@ -34,7 +34,7 @@ class Route extends Model
         
         static::creating(function ($route) {
             if (empty($route->id)) {
-                $route->id = (string) Str::uuid();
+                $route->id = (string) uuidv7();
             }
         });
     }

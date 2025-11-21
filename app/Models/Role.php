@@ -32,7 +32,7 @@ class Role extends Model
         
         static::creating(function ($role) {
             if (empty($role->id)) {
-                $role->id = (string) Str::uuid();
+                $role->id = (string) uuidv7();
             }
         });
     }

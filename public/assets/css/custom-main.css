@@ -1,10 +1,8 @@
-/* * {
-    font-family: 'Inter', sans-serif;
+/* Ensure Inter font from Google Fonts is used site-wide.
+   This override comes after the theme bundle so it takes precedence. */
+html, body {
+    font-family: 'Inter', sans-serif !important;
 }
-
-body {
-    font-family: 'Inter', sans-serif;
-} */
 
 @media (max-width: 1024px){
     .kt-header-mobile--fixed .kt-wrapper {
