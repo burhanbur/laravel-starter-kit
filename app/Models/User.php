@@ -2,14 +2,14 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+// use Illuminate\Contracts\Auth\MustVerifyEmail; // Uncomment this line if you want to implement email verification
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Lab404\Impersonate\Models\Impersonate;
-// use Kra8\Snowflake\HasSnowflakePrimary;
+// use Kra8\Snowflake\HasSnowflakePrimary; // Optional: Use this trait if you want to use Snowflake IDs instead of UUIDs
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject

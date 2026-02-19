@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 if (!function_exists('isProduction')) {
     function isProduction(): bool
@@ -53,18 +53,13 @@ if (!function_exists('objectToArray')) {
 
 if (!function_exists('formatCurrency')) {
     function formatCurrency($number = null) {
-        
-        $data = number_format((float) $number, 0, ',', '.');
-
-        return $data;
+        return number_format((float) $number, 0, ',', '.');
     }
 }
 
 if (!function_exists('toRupiah')) {
     function toRupiah($number = null) {
-        $data = "Rp " . formatCurrency($number);
-
-        return $data;
+        return "Rp " . formatCurrency($number);
     }
 }
 
@@ -143,9 +138,7 @@ if (!function_exists('formatDateTime')) {
         $date = date('Y-m-d', strtotime($dateTime));
         $time = date('H:i', strtotime($dateTime));
 
-        $returnValue = formatDate($date) . ' | ' . $time . ' ' . $gmt;
-
-        return $returnValue;
+        return formatDate($date) . ' | ' . $time . ' ' . $gmt;
     }
 }
 
@@ -254,7 +247,7 @@ if (!function_exists('cleanString')) {
 }
 
 if (!function_exists('uuidv7')) {
-    function uuidv7() 
+    function uuidv7()
     {
         // Unix epoch timestamp in milliseconds (48 bits)
         $unixTimeMs = (int) floor(microtime(true) * 1000);
@@ -269,7 +262,7 @@ if (!function_exists('uuidv7')) {
         $randD = random_int(0, 0xffffffff);  // 32 bits
 
         // Apply version: 0x7xxx
-        $version = dechex(0x7000 | $randA);  
+        $version = dechex(0x7000 | $randA);
 
         // Apply variant: 0b10xxxxxx xxxx....
         $variant = dechex(0x8000 | $randB);
@@ -319,5 +312,25 @@ if (!function_exists('numberToWords')) {
         }
 
         return 'angka terlalu besar';
+    }
+}
+
+if (!function_exists('buildHierarchy')) {
+    function buildHierarchy($units, $parentId = null, $level = 0)
+    {
+        $result = [];
+        
+        foreach ($units as $unit) {
+            if ($unit->parent_id == $parentId) {
+                $unit->level = $level;
+                $result[] = $unit;
+                
+                // Rekursif untuk child
+                $children = buildHierarchy($units, $unit->id, $level + 1);
+                $result = array_merge($result, $children);
+            }
+        }
+        
+        return $result;
     }
 }

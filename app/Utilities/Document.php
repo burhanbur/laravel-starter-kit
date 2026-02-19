@@ -2,9 +2,12 @@
 
 namespace App\Utilities;
 
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Document
 {
@@ -40,17 +43,15 @@ class Document
         $folderPath = $folder ? $this->normalizePath($folder) : '';
 
         // Ensure folder exists
-        if ($folderPath && !Storage::disk($this->disk)->exists($folderPath)) {
-            if (!Storage::disk($this->disk)->makeDirectory($folderPath)) {
-                throw new \RuntimeException("Failed to create directory: {$folderPath}");
-            }
+        if ($folderPath && !Storage::disk($this->disk)->exists($folderPath) && !Storage::disk($this->disk)->makeDirectory($folderPath)) {
+            throw new BadRequestHttpException("Failed to create directory: {$folderPath}");
         }
 
         // Store the file
         $storedPath = Storage::disk($this->disk)->putFileAs($folderPath, $file, $fileName);
 
         if (!$storedPath) {
-            throw new \RuntimeException('Failed to store file.');
+            throw new BadRequestHttpException('Failed to store file.');
         }
 
         // Return only filename (not full path) for consistency
@@ -107,7 +108,7 @@ class Document
         $toPath = $this->normalizePath($toFolder, $filename);
 
         if (!Storage::disk($this->disk)->exists($fromPath)) {
-            throw new \RuntimeException("Source file does not exist: {$fromPath}");
+            throw new NotFoundHttpException("Source file does not exist: {$fromPath}");
         }
 
         // Ensure destination folder exists
@@ -119,5 +120,50 @@ class Document
         }
 
         return Storage::disk($this->disk)->move($fromPath, $toPath);
+    }
+
+    /**
+     * Copy document from one folder to another and return the new filename.
+     *
+     * @param string $filename
+     * @param string|null $fromFolder
+     * @param string|null $toFolder
+     * @param string|null $newFileName Optional new filename (including extension). If not provided a timestamped name will be generated.
+     * @return string New filename
+     */
+    public function copyDocs(string $filename, ?string $fromFolder = null, ?string $toFolder = null, ?string $newFileName = null): string
+    {
+        $fromPath = $this->normalizePath($fromFolder, $filename);
+
+        if (!Storage::disk($this->disk)->exists($fromPath)) {
+            throw new NotFoundHttpException("Source file does not exist: {$fromPath}");
+        }
+
+        // Ensure destination folder exists
+        if ($toFolder) {
+            $toFolderPath = $this->normalizePath($toFolder);
+            if (!Storage::disk($this->disk)->exists($toFolderPath)) {
+                Storage::disk($this->disk)->makeDirectory($toFolderPath);
+            }
+        }
+
+        $extension = pathinfo($filename, PATHINFO_EXTENSION);
+        $baseName = pathinfo($filename, PATHINFO_FILENAME);
+
+        if ($newFileName) {
+            $destFileName = $newFileName;
+        } else {
+            $destFileName = $baseName . '-' . date('YmdHis') . '.' . $extension;
+        }
+
+        $toPath = $this->normalizePath($toFolder, $destFileName);
+
+        $copied = Storage::disk($this->disk)->copy($fromPath, $toPath);
+
+        if (!$copied) {
+            throw new BadRequestHttpException('Failed to copy document.');
+        }
+
+        return $destFileName;
     }
 }
