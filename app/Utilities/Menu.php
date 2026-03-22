@@ -13,7 +13,6 @@ class Menu
     {
         $user = auth()->user();
         $userId = $user->id ?? null;
-        $currentRole = $user ? $user->getCurrentActiveRole() : null;
 
         $menus = [
             'sidebar' => [],
@@ -31,12 +30,11 @@ class Menu
                 JOIN user_roles AS ur ON ur.role_id = r.id
                 LEFT JOIN routes AS ro ON ro.id = rm.route_id
                 WHERE ur.user_id = ?
-                    AND r.id = ?
                     AND m.deleted_at IS NULL
                     AND rm.is_active = true
                 ORDER BY rm.sequence ASC
-            ", [$userId, $currentRole->id ?? 0]);
-
+            ", [$userId]);
+            
             // Organize data into array keyed by role_menu_id
             $allMenus = [];
             foreach ($data as $menu) {

@@ -64,7 +64,7 @@ class UserSeeder extends Seeder
             } elseif ($user->username === 'admin') {
                 $user->assignRole('ADM'); // Administrator role
             } else {
-                $user->assignRole('ME'); // Mechanical Engineer role
+                $user->assignRole('USR'); // User role
             }
         }
     }

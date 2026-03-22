@@ -100,6 +100,28 @@ class Document
     }
 
     /**
+     * Save raw binary/string content (e.g. a generated PDF) directly to storage.
+     *
+     * @param string      $content  Raw file content (binary or string)
+     * @param string      $filename Filename including extension
+     * @param string|null $folder   Storage folder (relative to disk root)
+     * @return string Filename (same as $filename)
+     */
+    public function saveRawContent(string $content, string $filename, ?string $folder = null): string
+    {
+        $folderPath = $folder ? $this->normalizePath($folder) : '';
+
+        if ($folderPath && !Storage::disk($this->disk)->exists($folderPath)) {
+            Storage::disk($this->disk)->makeDirectory($folderPath);
+        }
+
+        $path = $this->normalizePath($folder, $filename);
+        Storage::disk($this->disk)->put($path, $content);
+
+        return $filename;
+    }
+
+    /**
      * Move document to different folder
      */
     public function moveDocs(string $filename, ?string $fromFolder = null, ?string $toFolder = null): bool
