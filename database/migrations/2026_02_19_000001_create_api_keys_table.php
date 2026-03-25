@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('api_keys', function (Blueprint $table) {
-            $table->id();
+            $table->char('id', 36)->primary();
             $table->string('name')->comment('Friendly name for the API key');
             $table->string('key', 64)->unique()->comment('The actual API key');
             $table->text('description')->nullable();

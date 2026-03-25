@@ -48,7 +48,8 @@ class ListApiKeys extends Command
         }
 
         if ($app = $this->option('app')) {
-            $query->where('application', 'like', "%{$app}%");
+            $lower = strtolower($app);
+            $query->where('application', 'like', "%{$lower}%");
         }
 
         $apiKeys = $query->get();

@@ -24,11 +24,14 @@ return new class extends Migration
             $table->char('updated_by', 36)->nullable();
             $table->timestamps();
 
-            $table->foreign('parent_id')->references('id')->on('role_menus')->onDelete('cascade');
             $table->foreign('role_id')->references('id')->on('roles')->onDelete('cascade');
             $table->foreign('menu_id')->references('id')->on('menus')->onDelete('cascade');
             $table->foreign('route_id')->references('id')->on('routes')->onDelete('cascade');
             $table->foreign('menu_type_id')->references('id')->on('menu_types')->onDelete('cascade');
+        });
+
+        Schema::table('role_menus', function (Blueprint $table) {
+            $table->foreign('parent_id')->references('id')->on('role_menus')->onDelete('cascade');
         });
     }
 

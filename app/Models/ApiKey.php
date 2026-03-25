@@ -2,13 +2,19 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class ApiKey extends Model
 {
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
+
+    protected $table = 'api_keys';
+    protected $primaryKey = 'id';
+    public $incrementing = false;
+    protected $keyType = 'string';
 
     protected $fillable = [
         'name',
@@ -38,12 +44,25 @@ class ApiKey extends Model
         'key', // Hide the actual key in responses
     ];
 
+    protected $dates = ['deleted_at'];
+
+    protected static function boot()
+    {
+        parent::boot();
+        
+        static::creating(function ($apiKey) {
+            if (empty($apiKey->id)) {
+                $apiKey->id = (string) uuidv7();
+            }
+        });
+    }
+
     /**
      * Generate a new API key
      */
     public static function generate(): string
     {
-        return 'jelita_' . Str::random(48);
+        return Str::slug(config('app.alias', 'app'), '_') . '_' . Str::random(48);
     }
 
     /**
