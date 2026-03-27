@@ -16,7 +16,7 @@
 						@foreach($menus['sidebar'] as $key => $menu)
 							@if (empty($menu->children) || count($menu->children) == 0)
 								{{-- Standalone menu without children --}}
-								<li class="kt-menu__item  @if(Request::route()->getName() == $menu->route_name) kt-menu__item--active @endif" aria-haspopup="true">
+								<li class="kt-menu__item  @if(!empty($menu->is_active)) kt-menu__item--active @endif" aria-haspopup="true">
 									<a href="{{ $menu->route_name ? route($menu->route_name) : 'javascript:void(0);' }}" class="kt-menu__link ">
 										<i class="kt-menu__link-icon {{ $menu->icon ?? 'fa fa-dot-circle' }}"></i>
 										<span class="kt-menu__link-text">{{ $menu->name }}</span>
@@ -24,16 +24,7 @@
 								</li>
 							@else
 								{{-- Parent menu with children --}}
-								@php
-									$hasActiveChild = false;
-									foreach ($menu->children as $child) {
-										if (Request::route()->getName() == $child->route_name) {
-											$hasActiveChild = true;
-											break;
-										}
-									}
-								@endphp
-								<li class="kt-menu__item @if($hasActiveChild || Request::route()->getName() == $menu->route_name) kt-menu__item--open kt-menu__item--here @endif kt-menu__item--submenu" aria-haspopup="true" data-ktmenu-submenu-toggle="hover">								
+								<li class="kt-menu__item @if(!empty($menu->is_active)) kt-menu__item--open kt-menu__item--here @endif kt-menu__item--submenu" aria-haspopup="true" data-ktmenu-submenu-toggle="hover">								
 									<a href="javascript:void(0);" class="kt-menu__link kt-menu__toggle">
 										<i class="kt-menu__link-icon {{ $menu->icon ?? 'flaticon2-menu' }}"></i>
 										<span class="kt-menu__link-text">{{ $menu->name }}</span>
@@ -49,7 +40,7 @@
 											</li>
 
 											@foreach ($menu->children as $subMenu)
-												<li class="kt-menu__item @if(Request::route()->getName() == $subMenu->route_name) kt-menu__item--active @endif" aria-haspopup="true">
+												<li class="kt-menu__item @if(!empty($subMenu->is_active)) kt-menu__item--active @endif" aria-haspopup="true">
 													<a href="{{ $subMenu->route_name ? route($subMenu->route_name) : 'javascript:void(0);' }}" class="kt-menu__link ">
 														<i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
 														<span class="kt-menu__link-text">{{ $subMenu->name }}</span>

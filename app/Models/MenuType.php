@@ -11,6 +11,10 @@ class MenuType extends Model
 {
     use HasFactory;
 
+    public const SIDEBAR = 1;
+    public const TOPBAR = 2;
+    public const FOOTER = 3;
+
     protected $table = 'menu_types';
     protected $primaryKey = 'id';
 
