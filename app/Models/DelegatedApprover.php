@@ -16,7 +16,23 @@ class DelegatedApprover extends Model
     public $incrementing = false;
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'workflow_approver_id',
+        'start_date',
+        'end_date',
+        'is_active',
+        'delegate_user_id',
+        'delegate_position_id',
+        'created_by',
+        'updated_by',
+        'deleted_by',
+    ];
+
+    protected $casts = [
+        'is_active'  => 'boolean',
+        'start_date' => 'datetime',
+        'end_date'   => 'datetime',
+    ];
 
     protected static function boot()
     {
@@ -26,5 +42,15 @@ class DelegatedApprover extends Model
                 $model->{$model->getKeyName()} = (string) Str::uuid();
             }
         });
+    }
+
+    public function workflowApprover()
+    {
+        return $this->belongsTo(WorkflowApprover::class, 'workflow_approver_id');
+    }
+
+    public function delegateUser()
+    {
+        return $this->belongsTo(User::class, 'delegate_user_id');
     }
 }

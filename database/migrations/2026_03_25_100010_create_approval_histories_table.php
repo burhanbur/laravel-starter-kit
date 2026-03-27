@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('signature_hash')->nullable();
             $table->dateTime('approved_at')->nullable();
             $table->char('created_by', 36)->nullable();
+            $table->char('updated_by', 36)->nullable();
             $table->timestamps();
         });
 

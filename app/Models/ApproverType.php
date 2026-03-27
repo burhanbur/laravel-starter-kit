@@ -16,7 +16,13 @@ class ApproverType extends Model
     public $incrementing = false;
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'name',
+        'description',
+        'created_by',
+        'updated_by',
+        'deleted_by',
+    ];
 
     protected static function boot()
     {
@@ -26,5 +32,15 @@ class ApproverType extends Model
                 $model->{$model->getKeyName()} = (string) Str::uuid();
             }
         });
+    }
+
+    public function workflowApprovers()
+    {
+        return $this->hasMany(WorkflowApprover::class, 'approval_type_id');
+    }
+
+    public function approvals()
+    {
+        return $this->hasMany(Approval::class, 'approval_type_id');
     }
 }

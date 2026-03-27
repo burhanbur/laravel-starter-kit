@@ -16,7 +16,22 @@ class ApprovalHistory extends Model
     public $incrementing = false;
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'workflow_request_id',
+        'approval_id',
+        'user_id',
+        'action',
+        'note',
+        'qrcode_path',
+        'signature_hash',
+        'approved_at',
+        'created_by',
+        'updated_by',
+    ];
+
+    protected $casts = [
+        'approved_at' => 'datetime',
+    ];
 
     protected static function boot()
     {
@@ -26,5 +41,20 @@ class ApprovalHistory extends Model
                 $model->{$model->getKeyName()} = (string) Str::uuid();
             }
         });
+    }
+
+    public function workflowRequest()
+    {
+        return $this->belongsTo(WorkflowRequest::class, 'workflow_request_id');
+    }
+
+    public function approval()
+    {
+        return $this->belongsTo(Approval::class, 'approval_id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

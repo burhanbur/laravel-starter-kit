@@ -16,7 +16,24 @@ class WorkflowApprover extends Model
     public $incrementing = false;
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'workflow_approval_stage_id',
+        'approval_type_id',
+        'user_id',
+        'position_id',
+        'level',
+        'is_optional',
+        'can_delegate',
+        'remarks',
+        'created_by',
+        'updated_by',
+        'deleted_by',
+    ];
+
+    protected $casts = [
+        'is_optional' => 'boolean',
+        'can_delegate' => 'boolean',
+    ];
 
     protected static function boot()
     {
@@ -26,5 +43,25 @@ class WorkflowApprover extends Model
                 $model->{$model->getKeyName()} = (string) Str::uuid();
             }
         });
+    }
+
+    public function stage()
+    {
+        return $this->belongsTo(WorkflowApprovalStage::class, 'workflow_approval_stage_id');
+    }
+
+    public function approverType()
+    {
+        return $this->belongsTo(ApproverType::class, 'approval_type_id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function delegatedApprovers()
+    {
+        return $this->hasMany(DelegatedApprover::class, 'workflow_approver_id');
     }
 }

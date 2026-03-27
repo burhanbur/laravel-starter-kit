@@ -16,7 +16,14 @@ class WorkflowDefinition extends Model
     public $incrementing = false;
     protected $keyType = 'string';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'code',
+        'name',
+        'description',
+        'created_by',
+        'updated_by',
+        'deleted_by',
+    ];
 
     protected static function boot()
     {
@@ -26,5 +33,10 @@ class WorkflowDefinition extends Model
                 $model->{$model->getKeyName()} = (string) Str::uuid();
             }
         });
+    }
+
+    public function workflowApprovals()
+    {
+        return $this->hasMany(WorkflowApproval::class, 'workflow_definition_id');
     }
 }

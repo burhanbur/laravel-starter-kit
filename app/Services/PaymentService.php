@@ -16,6 +16,6 @@ class PaymentService
 {
     public function processUperpayNotification($data)
     {
-        return [];
+        return $data;
     }
 }

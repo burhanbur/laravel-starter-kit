@@ -31,6 +31,7 @@ class RolePermissionSeeder extends Seeder
         $menusIndexRoute = Route::whereIn('name', ['menu.index', 'menu.create', 'menu.edit', 'menu.store', 'menu.update', 'menu.destroy'])->get();
         $routesIndexRoute = Route::whereIn('name', ['route.index', 'route.create', 'route.edit', 'route.store', 'route.update', 'route.destroy'])->get();
         $impersonateIndexRoute = Route::whereIn('name', ['impersonate', 'leave-impersonate'])->get();
+        $approvalRoutes = Route::where('module', 'Approval')->get();
 
         // Impersonate
         if ($impersonateIndexRoute) {
@@ -79,6 +80,17 @@ class RolePermissionSeeder extends Seeder
         // Manajemen Route menu
         if ($routesIndexRoute) {
             foreach ($routesIndexRoute as $route) {
+                RolePermission::create([
+                    'role_id' => $superadminRole->id,
+                    'route_id' => $route->id,
+                    'created_by' => null,
+                ]);
+            }
+        }
+
+        // Approval module
+        if ($approvalRoutes) {
+            foreach ($approvalRoutes as $route) {
                 RolePermission::create([
                     'role_id' => $superadminRole->id,
                     'route_id' => $route->id,

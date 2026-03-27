@@ -1,6 +1,6 @@
-<?php 
+<?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Payment;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -11,39 +11,25 @@ use Illuminate\Support\Facades\Validator;
 
 use App\Services\UperpayService;
 use App\Services\PaymentService;
+use App\Traits\HasDynamicFilters;
 use App\Traits\ApiResponse;
 
+use App\Http\Requests\Payment\NotificationRequest;
+
+use ErrorException;
 use Exception;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class PaymentController extends Controller
 {
-    use ApiResponse;
+    use ApiResponse, HasDynamicFilters;
 
-    public function notification(Request $request)
+    public function notification(NotificationRequest $request)
     {
         $code = 400;
-        $endpoint = URL::current();
         $response = [];
-        $ruleMessages = [];
         $uperpayToken = config('uperpay.token');
-
-        $rules = [
-            'virtual_account' => 'required',
-            'customer_name' => 'required',
-            'trx_id' => 'required',
-            'trx_amount' => 'required',
-            'payment_amount' => 'required',
-            'datetime_payment' => 'required',
-        ];
-
         $data = $request->all();
-        $validate = Validator::make($data, $rules, $ruleMessages);
-
-        if ($validate->fails()) {
-            $errMessage = $validate->errors()->first();
-            Log::error($errMessage);
-            return $this->errorResponse($errMessage, 422);
-        }
 
         if (@apache_request_headers()['authorization'] != 'Bearer ' . $uperpayToken) {
             $code = 401;

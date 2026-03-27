@@ -31,6 +31,7 @@ class RoleMenuSeeder extends Seeder
         $roles = Menu::where('name', 'Manajemen Peran')->first();
         $menus = Menu::where('name', 'Manajemen Menu')->first();
         $routes = Menu::where('name', 'Manajemen Route')->first();
+        $approval = Menu::where('name', 'Manajemen Approval')->first();
 
         // Get all routes
         $usersIndexRoute = Route::whereIn('name', ['user.index' /*, 'user.create', 'user.edit', 'user.store', 'user.update', 'user.destroy' */])->get();
@@ -104,6 +105,22 @@ class RoleMenuSeeder extends Seeder
                 ]);
                 break;
             }
+        }
+
+        // Approval menu
+        $approvalIndexRoute = Route::where('name', 'approval.workflow-definition.index')->first();
+
+        if ($approval && $approvalIndexRoute) {
+            RoleMenu::create([
+                'parent_id' => null,
+                'role_id' => $superadminRole->id,
+                'menu_id' => $approval->id,
+                'route_id' => $approvalIndexRoute->id,
+                'sequence' => 5,
+                'is_active' => true,
+                'created_by' => null,
+                'updated_by' => null,
+            ]);
         }
 
         // $this->command->info('RoleMenu seeder completed successfully!');

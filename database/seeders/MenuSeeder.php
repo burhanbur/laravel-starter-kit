@@ -46,6 +46,12 @@ class MenuSeeder extends Seeder
                 'created_by' => null,
                 'updated_by' => null,
             ],
+            [
+                'name' => 'Manajemen Approval',
+                'icon' => 'flaticon2-checking',
+                'created_by' => null,
+                'updated_by' => null,
+            ],
         ];
 
         foreach ($menus as $menu) {
