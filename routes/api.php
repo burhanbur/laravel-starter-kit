@@ -23,46 +23,59 @@ use App\Http\Controllers\Api\Payment\PaymentController;
 Route::prefix('approval')->group(function () {
 
     // Master / Configuration
-    Route::apiResource('workflow-definitions', WorkflowDefinitionController::class)->parameters([
-        'workflow-definitions' => 'id',
-    ]);
+    Route::get('workflow-definitions', [WorkflowDefinitionController::class, 'index']);
+    Route::post('workflow-definitions', [WorkflowDefinitionController::class, 'store']);
+    Route::get('workflow-definitions/{id}', [WorkflowDefinitionController::class, 'show']);
+    Route::put('workflow-definitions/{id}', [WorkflowDefinitionController::class, 'update']);
+    Route::delete('workflow-definitions/{id}', [WorkflowDefinitionController::class, 'destroy']);
 
-    Route::apiResource('workflow-approvals', WorkflowApprovalController::class)->parameters([
-        'workflow-approvals' => 'id',
-    ]);
+    Route::get('workflow-approvals', [WorkflowApprovalController::class, 'index']);
+    Route::post('workflow-approvals', [WorkflowApprovalController::class, 'store']);
+    Route::get('workflow-approvals/{id}', [WorkflowApprovalController::class, 'show']);
+    Route::put('workflow-approvals/{id}', [WorkflowApprovalController::class, 'update']);
+    Route::delete('workflow-approvals/{id}', [WorkflowApprovalController::class, 'destroy']);
 
-    Route::apiResource('approval-statuses', ApprovalStatusController::class)->parameters([
-        'approval-statuses' => 'id',
-    ]);
+    Route::get('approval-statuses', [ApprovalStatusController::class, 'index']);
+    Route::post('approval-statuses', [ApprovalStatusController::class, 'store']);
+    Route::get('approval-statuses/{id}', [ApprovalStatusController::class, 'show']);
+    Route::put('approval-statuses/{id}', [ApprovalStatusController::class, 'update']);
+    Route::delete('approval-statuses/{id}', [ApprovalStatusController::class, 'destroy']);
 
-    Route::apiResource('approver-types', ApproverTypeController::class)->parameters([
-        'approver-types' => 'id',
-    ]);
+    Route::get('approver-types', [ApproverTypeController::class, 'index']);
+    Route::post('approver-types', [ApproverTypeController::class, 'store']);
+    Route::get('approver-types/{id}', [ApproverTypeController::class, 'show']);
+    Route::put('approver-types/{id}', [ApproverTypeController::class, 'update']);
+    Route::delete('approver-types/{id}', [ApproverTypeController::class, 'destroy']);
 
-    Route::apiResource('workflow-approval-stages', WorkflowApprovalStageController::class)->parameters([
-        'workflow-approval-stages' => 'id',
-    ]);
+    Route::get('workflow-approval-stages', [WorkflowApprovalStageController::class, 'index']);
+    Route::post('workflow-approval-stages', [WorkflowApprovalStageController::class, 'store']);
+    Route::get('workflow-approval-stages/{id}', [WorkflowApprovalStageController::class, 'show']);
+    Route::put('workflow-approval-stages/{id}', [WorkflowApprovalStageController::class, 'update']);
+    Route::delete('workflow-approval-stages/{id}', [WorkflowApprovalStageController::class, 'destroy']);
 
-    Route::apiResource('workflow-approvers', WorkflowApproverController::class)->parameters([
-        'workflow-approvers' => 'id',
-    ]);
+    Route::get('workflow-approvers', [WorkflowApproverController::class, 'index']);
+    Route::post('workflow-approvers', [WorkflowApproverController::class, 'store']);
+    Route::get('workflow-approvers/{id}', [WorkflowApproverController::class, 'show']);
+    Route::put('workflow-approvers/{id}', [WorkflowApproverController::class, 'update']);
+    Route::delete('workflow-approvers/{id}', [WorkflowApproverController::class, 'destroy']);
 
-    Route::apiResource('delegated-approvers', DelegatedApproverController::class)->parameters([
-        'delegated-approvers' => 'id',
-    ]);
+    Route::get('delegated-approvers', [DelegatedApproverController::class, 'index']);
+    Route::post('delegated-approvers', [DelegatedApproverController::class, 'store']);
+    Route::get('delegated-approvers/{id}', [DelegatedApproverController::class, 'show']);
+    Route::put('delegated-approvers/{id}', [DelegatedApproverController::class, 'update']);
+    Route::delete('delegated-approvers/{id}', [DelegatedApproverController::class, 'destroy']);
 
     // Runtime
-    Route::apiResource('workflow-requests', WorkflowRequestController::class)->only(['index', 'show', 'store'])->parameters([
-        'workflow-requests' => 'id',
-    ]);
+    Route::get('workflow-requests', [WorkflowRequestController::class, 'index']);
+    Route::post('workflow-requests', [WorkflowRequestController::class, 'store']);
+    Route::get('workflow-requests/{id}', [WorkflowRequestController::class, 'show']);
 
-    Route::apiResource('approvals', ApprovalController::class)->only(['index', 'show', 'store'])->parameters([
-        'approvals' => 'id',
-    ]);
+    Route::get('approvals', [ApprovalController::class, 'index']);
+    Route::post('approvals', [ApprovalController::class, 'store']);
+    Route::get('approvals/{id}', [ApprovalController::class, 'show']);
 
-    Route::apiResource('approval-histories', ApprovalHistoryController::class)->only(['index', 'show'])->parameters([
-        'approval-histories' => 'id',
-    ]);
+    Route::get('approval-histories', [ApprovalHistoryController::class, 'index']);
+    Route::get('approval-histories/{id}', [ApprovalHistoryController::class, 'show']);
 });
 
 /*
