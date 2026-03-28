@@ -24,6 +24,37 @@ class PaymentController extends Controller
 {
     use ApiResponse, HasDynamicFilters;
 
+    /**
+     * @OA\Post(
+     *     path="/payment/notification",
+     *     operationId="paymentNotification",
+     *     tags={"Payment"},
+     *     summary="Terima notifikasi pembayaran dari payment gateway",
+     *     description="Endpoint ini dipanggil oleh payment gateway (Uperpay) untuk mengirimkan notifikasi status pembayaran. Autentikasi menggunakan Bearer token dari Uperpay.",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"transaction_id", "status", "amount"},
+     *             @OA\Property(property="transaction_id", type="string", example="TRX-20260328-001"),
+     *             @OA\Property(property="status", type="string", enum={"success","failed","pending"}, example="success"),
+     *             @OA\Property(property="amount", type="number", format="float", example=150000),
+     *             @OA\Property(property="reference_id", type="string", example="REF-001"),
+     *             @OA\Property(property="payment_method", type="string", example="virtual_account")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Notifikasi berhasil diproses",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Notification processed successfully")
+     *         )
+     *     ),
+     *     @OA\Response(response=401, description="Unauthorized - Bearer token tidak valid"),
+     *     @OA\Response(response=422, description="Validation Error"),
+     *     @OA\Response(response=500, description="Internal Server Error")
+     * )
+     */
     public function notification(NotificationRequest $request)
     {
         $code = 400;
