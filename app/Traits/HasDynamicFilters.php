@@ -57,7 +57,25 @@ trait HasDynamicFilters
      */
     protected function applyFilterCondition($query, $column, $operator, $value)
     {
-        switch (strtolower($operator)) {
+        $operator = strtolower($operator);
+
+        // handle arrays for LIKE as OR
+        if (is_array($value) && in_array($operator, ['like','starts_with','ends_with'])) {
+            $query->where(function($q) use ($column, $operator, $value) {
+                foreach ($value as $idx => $v) {
+                    if ($idx === 0) {
+                        $this->applySingleLike($q, $column, $operator, $v);
+                    } else {
+                        $q->orWhere(function($sub) use ($column, $operator, $v) {
+                            $this->applySingleLike($sub, $column, $operator, $v);
+                        });
+                    }
+                }
+            });
+            return;
+        }
+
+        switch ($operator) {
             case 'like':
                 $query->where($column, 'LIKE', "%{$value}%");
                 break;
@@ -113,6 +131,17 @@ trait HasDynamicFilters
                 break;
             default:
                 $query->where($column, 'LIKE', "%{$value}%");
+        }
+    }
+
+    protected function applySingleLike($query, $column, $operator, $value)
+    {
+        if ($operator === 'starts_with') {
+            $query->where($column, 'LIKE', "{$value}%");
+        } elseif ($operator === 'ends_with') {
+            $query->where($column, 'LIKE', "%{$value}");
+        } else {
+            $query->where($column, 'LIKE', "%{$value}%");
         }
     }
 }
