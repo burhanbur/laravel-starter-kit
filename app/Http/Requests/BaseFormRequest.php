@@ -27,17 +27,17 @@ class BaseFormRequest extends FormRequest
         $errMessage = implode(' | ', $errors);
         \Log::warning($errMessage);
 
-        if ($this->wantsJson()) {
-            $response = $this->errorResponse($errors, 422);
+        if ($this->is('api/*') || $this->expectsJson()) {
+            $response = $this->errorResponse('Validasi gagal.', 422, $validator->errors()->toArray());
 
             throw new HttpResponseException($response);
-        } else {
-            Session::flash('notification', [
-                'level' => 'error',
-                'message' => $errMessage
-            ]);
-    
-            throw new ValidationException($validator);
         }
+
+        Session::flash('notification', [
+            'level' => 'error',
+            'message' => $errMessage,
+        ]);
+
+        throw new ValidationException($validator);
     }
 }

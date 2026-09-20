@@ -40,6 +40,15 @@ namespace App\Docs\Internal;
  *     description="API Key untuk autentikasi. Format: laravel_[48_characters]. Hubungi administrator untuk mendapatkan API key."
  * )
  *
+ * @OA\SecurityScheme(
+ *     securityScheme="BearerAuth",
+ *     type="http",
+ *     scheme="bearer",
+ *     bearerFormat="JWT",
+ *     description="JWT Bearer Token. Gunakan endpoint /api/v1/auth/login untuk mendapatkan token."
+ * )
+ *
+ * @OA\Tag(name="Auth", description="Autentikasi Pengguna & Token JWT")
  * @OA\Tag(name="Approval - Workflow Definitions", description="CRUD workflow definitions")
  * @OA\Tag(name="Approval - Workflow Approvals", description="CRUD workflow approvals (versi aktif)")
  * @OA\Tag(name="Approval - Approval Statuses", description="CRUD status approval per workflow")
