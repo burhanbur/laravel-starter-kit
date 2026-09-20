@@ -11,6 +11,7 @@ class ApproverTypeResource extends JsonResource
     {
         return [
             'id'          => $this->id,
+            'code'        => $this->code,
             'name'        => $this->name,
             'description' => $this->description,
             'created_by'  => $this->created_by,

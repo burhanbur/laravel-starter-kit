@@ -18,10 +18,9 @@ class WorkflowApprover extends Model
 
     protected $fillable = [
         'workflow_approval_stage_id',
-        'approval_type_id',
+        'approver_type_id',
         'user_id',
         'position_id',
-        'level',
         'is_optional',
         'can_delegate',
         'remarks',
@@ -30,18 +29,18 @@ class WorkflowApprover extends Model
         'deleted_by',
     ];
 
-    protected $casts = [
-        'is_optional' => 'boolean',
-        'can_delegate' => 'boolean',
-    ];
-
-    protected static function boot()
+    protected function casts(): array
     {
-        parent::boot();
-        static::creating(function ($model) {
-            if (empty($model->{$model->getKeyName()})) {
-                $model->{$model->getKeyName()} = (string) Str::uuid();
-            }
+        return [
+            'is_optional' => 'boolean',
+            'can_delegate' => 'boolean',
+        ];
+    }
+
+    protected static function booted(): void
+    {
+        static::creating(function (WorkflowApprover $approver): void {
+            $approver->id ??= (string) uuidv7();
         });
     }
 
@@ -52,7 +51,7 @@ class WorkflowApprover extends Model
 
     public function approverType()
     {
-        return $this->belongsTo(ApproverType::class, 'approval_type_id');
+        return $this->belongsTo(ApproverType::class, 'approver_type_id');
     }
 
     public function user()
@@ -63,5 +62,10 @@ class WorkflowApprover extends Model
     public function delegatedApprovers()
     {
         return $this->hasMany(DelegatedApprover::class, 'workflow_approver_id');
+    }
+
+    public function approvals()
+    {
+        return $this->hasMany(Approval::class, 'workflow_approver_id');
     }
 }

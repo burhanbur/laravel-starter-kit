@@ -43,6 +43,7 @@ class Role extends Model
     public function users()
     {
         return $this->belongsToMany(User::class, 'user_roles', 'role_id', 'user_id')
+                    ->withPivot(['created_by'])
                     ->withTimestamps();
     }
 
@@ -57,6 +58,7 @@ class Role extends Model
     public function permissions()
     {
         return $this->belongsToMany(Route::class, 'role_permissions', 'role_id', 'route_id')
+                    ->withPivot(['created_by'])
                     ->withTimestamps();
     }
 }

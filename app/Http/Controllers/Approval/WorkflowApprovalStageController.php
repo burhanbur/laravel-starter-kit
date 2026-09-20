@@ -43,8 +43,7 @@ class WorkflowApprovalStageController extends Controller
             'workflow_approval_id' => 'required|exists:workflow_approvals,id',
             'name'                 => 'required|string|max:255',
             'sequence'             => 'required|integer|min:1',
-            'level'                => 'required|integer|min:1',
-            'approval_logic'       => 'required|in:all,any',
+            'approval_logic'       => 'required|in:ALL,ANY',
         ]);
 
         DB::beginTransaction();
@@ -54,8 +53,7 @@ class WorkflowApprovalStageController extends Controller
                 'workflow_approval_id' => $request->workflow_approval_id,
                 'name'                 => $request->name,
                 'sequence'             => $request->sequence,
-                'level'                => $request->level,
-                'approval_logic'       => $request->approval_logic,
+                'approval_logic'       => strtoupper($request->approval_logic),
                 'created_by'           => auth()->id(),
                 'updated_by'           => auth()->id(),
             ]);
@@ -77,8 +75,7 @@ class WorkflowApprovalStageController extends Controller
             'workflow_approval_id' => 'required|exists:workflow_approvals,id',
             'name'                 => 'required|string|max:255',
             'sequence'             => 'required|integer|min:1',
-            'level'                => 'required|integer|min:1',
-            'approval_logic'       => 'required|in:all,any',
+            'approval_logic'       => 'required|in:ALL,ANY',
         ]);
 
         DB::beginTransaction();
@@ -89,8 +86,7 @@ class WorkflowApprovalStageController extends Controller
                 'workflow_approval_id' => $request->workflow_approval_id,
                 'name'                 => $request->name,
                 'sequence'             => $request->sequence,
-                'level'                => $request->level,
-                'approval_logic'       => $request->approval_logic,
+                'approval_logic'       => strtoupper($request->approval_logic),
                 'updated_by'           => auth()->id(),
             ]);
 

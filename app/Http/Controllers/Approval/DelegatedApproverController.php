@@ -27,7 +27,7 @@ class DelegatedApproverController extends Controller
 
     public function create(Request $request)
     {
-        $workflowApprovers = WorkflowApprover::with('stage.workflowApproval.workflowDefinition')->orderBy('level', 'asc')->get();
+        $workflowApprovers = WorkflowApprover::with('stage.workflowApproval.workflowDefinition')->orderBy('created_at')->get();
         $users             = User::orderBy('name', 'asc')->get();
 
         return view('pages.approval.delegated-approver.create', get_defined_vars())->renderSections()['content'];
@@ -36,7 +36,7 @@ class DelegatedApproverController extends Controller
     public function edit($id)
     {
         $data              = DelegatedApprover::findOrFail($id);
-        $workflowApprovers = WorkflowApprover::with('stage.workflowApproval.workflowDefinition')->orderBy('level', 'asc')->get();
+        $workflowApprovers = WorkflowApprover::with('stage.workflowApproval.workflowDefinition')->orderBy('created_at')->get();
         $users             = User::orderBy('name', 'asc')->get();
 
         return view('pages.approval.delegated-approver.edit', get_defined_vars())->renderSections()['content'];

@@ -6,35 +6,26 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('approval_histories', function (Blueprint $table) {
-            $table->char('id', 36)->primary();
-            $table->char('workflow_request_id', 36);
-            $table->char('approval_id', 36)->nullable();
-            $table->char('user_id', 36);
+            $table->uuid('id')->primary();
+            $table->uuid('workflow_request_id');
+            $table->uuid('approval_id')->nullable();
+            $table->uuid('actor_user_id')->nullable();
             $table->string('action');
             $table->text('note')->nullable();
-            $table->string('qrcode_path')->nullable();
-            $table->string('signature_hash')->nullable();
-            $table->dateTime('approved_at')->nullable();
-            $table->char('created_by', 36)->nullable();
-            $table->char('updated_by', 36)->nullable();
-            $table->timestamps();
-        });
+            $table->json('metadata')->nullable();
+            $table->timestamp('created_at')->useCurrent();
 
-        Schema::table('approval_histories', function (Blueprint $table) {
-            $table->foreign('workflow_request_id')->references('id')->on('workflow_requests')->onDelete('cascade');
-            $table->foreign('approval_id')->references('id')->on('approvals')->onDelete('cascade');
+            $table->foreign('workflow_request_id')->references('id')->on('workflow_requests')->cascadeOnDelete();
+            $table->foreign('approval_id')->references('id')->on('approvals')->nullOnDelete();
+            $table->foreign('actor_user_id')->references('id')->on('users')->nullOnDelete();
+            $table->index(['workflow_request_id', 'created_at']);
+            $table->index(['actor_user_id', 'created_at']);
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('approval_histories');

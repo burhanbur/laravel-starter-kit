@@ -19,7 +19,6 @@ class WorkflowApprovalStage extends Model
     protected $fillable = [
         'workflow_approval_id',
         'sequence',
-        'level',
         'approval_logic',
         'name',
         'created_by',
@@ -27,13 +26,15 @@ class WorkflowApprovalStage extends Model
         'deleted_by',
     ];
 
-    protected static function boot()
+    protected function casts(): array
     {
-        parent::boot();
-        static::creating(function ($model) {
-            if (empty($model->{$model->getKeyName()})) {
-                $model->{$model->getKeyName()} = (string) Str::uuid();
-            }
+        return ['sequence' => 'integer'];
+    }
+
+    protected static function booted(): void
+    {
+        static::creating(function (WorkflowApprovalStage $stage): void {
+            $stage->id ??= (string) uuidv7();
         });
     }
 

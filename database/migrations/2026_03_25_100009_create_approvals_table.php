@@ -6,46 +6,35 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('approvals', function (Blueprint $table) {
-            $table->char('id', 36)->primary();
-            $table->char('workflow_request_id', 36);
-            $table->char('workflow_approval_stage_id', 36);
-            $table->char('workflow_approval_id', 36);
-            $table->char('approval_type_id', 36);
-            $table->char('approval_status_id', 36);
-            $table->char('user_id', 36)->nullable();
-            $table->char('position_id', 36)->nullable();
-            $table->char('delegate_from_user_id', 36)->nullable();
-            $table->char('delegate_from_position_id', 36)->nullable();
-            $table->smallInteger('level');
-            $table->string('qrcode_path')->nullable();
-            $table->string('signature_hash')->nullable();
+            $table->uuid('id')->primary();
+            $table->uuid('workflow_request_id');
+            $table->uuid('workflow_approval_stage_id');
+            $table->uuid('workflow_approver_id');
+            $table->uuid('delegated_approver_id')->nullable();
+            $table->uuid('actor_user_id');
+            $table->uuid('actor_position_id')->nullable();
+            $table->string('decision');
             $table->text('note')->nullable();
-            $table->dateTime('approved_at')->nullable();
-            $table->char('created_by', 36)->nullable();
-            $table->char('updated_by', 36)->nullable();
-            $table->char('deleted_by', 36)->nullable();
-            $table->softDeletes();
-            $table->timestamps();
-        });
+            $table->string('qrcode_path')->nullable();
+            $table->string('signature_hash', 64);
+            $table->smallInteger('signature_key_version')->default(1);
+            $table->timestamp('acted_at');
+            $table->timestamp('created_at')->useCurrent();
 
-        Schema::table('approvals', function (Blueprint $table) {
-            $table->foreign('workflow_request_id')->references('id')->on('workflow_requests')->onDelete('cascade');
-            $table->foreign('workflow_approval_stage_id')->references('id')->on('workflow_approval_stages')->onDelete('cascade');
-            $table->foreign('workflow_approval_id')->references('id')->on('workflow_approvals')->onDelete('cascade');
-            $table->foreign('approval_type_id')->references('id')->on('approver_types')->onDelete('cascade');
-            $table->foreign('approval_status_id')->references('id')->on('approval_status')->onDelete('cascade');
+            $table->foreign('workflow_request_id')->references('id')->on('workflow_requests')->cascadeOnDelete();
+            $table->foreign('workflow_approval_stage_id')->references('id')->on('workflow_approval_stages')->restrictOnDelete();
+            $table->foreign('workflow_approver_id')->references('id')->on('workflow_approvers')->restrictOnDelete();
+            $table->foreign('delegated_approver_id')->references('id')->on('delegated_approvers')->nullOnDelete();
+            $table->foreign('actor_user_id')->references('id')->on('users')->restrictOnDelete();
+            $table->unique(['workflow_request_id', 'workflow_approver_id']);
+            $table->index(['workflow_request_id', 'workflow_approval_stage_id']);
+            $table->index(['actor_user_id', 'acted_at']);
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('approvals');

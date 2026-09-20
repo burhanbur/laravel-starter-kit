@@ -29,7 +29,7 @@ class ApprovalHistoryController extends Controller
      *     @OA\Parameter(name="sort_by", in="query", @OA\Schema(type="string", enum={"id","action","created_at"}, default="created_at")),
      *     @OA\Parameter(name="sort_order", in="query", @OA\Schema(type="string", enum={"asc","desc"}, default="desc")),
      *     @OA\Parameter(name="filter[workflow_request_id]", in="query", @OA\Schema(type="string", format="uuid")),
-     *     @OA\Parameter(name="filter[user_id]", in="query", @OA\Schema(type="string", format="uuid")),
+     *     @OA\Parameter(name="filter[actor_user_id]", in="query", @OA\Schema(type="string", format="uuid")),
      *     @OA\Parameter(name="filter[action]", in="query", @OA\Schema(type="string", example="APPROVED")),
      *     @OA\Response(response=200, description="OK"),
      *     @OA\Response(response=401, description="Unauthorized"),
@@ -56,10 +56,10 @@ class ApprovalHistoryController extends Controller
             $filterTypes = $request->input('filter_type', []);
 
             $query = ApprovalHistory::query()
-                ->select(['id', 'workflow_request_id', 'approval_id', 'user_id', 'action', 'note', 'created_at', 'updated_at']);
+                ->select(['id', 'workflow_request_id', 'approval_id', 'actor_user_id', 'action', 'note', 'metadata', 'created_at']);
 
             $query = $this->applyDynamicFilters($query, $filters, $filterTypes,
-                ['id', 'workflow_request_id', 'approval_id', 'user_id', 'action'],
+                ['id', 'workflow_request_id', 'approval_id', 'actor_user_id', 'action'],
                 []
             );
 
@@ -105,7 +105,7 @@ class ApprovalHistoryController extends Controller
     public function show($id)
     {
         try {
-            $data = ApprovalHistory::with(['workflowRequest', 'approval', 'user'])->findOrFail($id);
+            $data = ApprovalHistory::with(['workflowRequest', 'approval', 'actorUser'])->findOrFail($id);
             return $this->successResponse(new ApprovalHistoryResource($data), 'Approval history retrieved successfully');
         } catch (Exception $e) {
             Log::error('Failed to retrieve approval history', ['id' => $id, 'error' => $e->getMessage()]);

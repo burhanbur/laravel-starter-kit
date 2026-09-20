@@ -20,7 +20,7 @@ class WorkflowApproverController extends Controller
     public function index(Request $request)
     {
         $data = WorkflowApprover::with(['stage.workflowApproval.workflowDefinition', 'approverType', 'user'])
-            ->orderBy('level', 'asc')
+            ->orderBy('created_at')
             ->get();
 
         return view('pages.approval.workflow-approver.index', get_defined_vars());
@@ -49,9 +49,9 @@ class WorkflowApproverController extends Controller
     {
         $request->validate([
             'workflow_approval_stage_id' => 'required|exists:workflow_approval_stages,id',
-            'approval_type_id'           => 'required|exists:approver_types,id',
+            'approver_type_id'           => 'required|exists:approver_types,id',
             'user_id'                    => 'nullable|exists:users,id',
-            'level'                      => 'required|integer|min:1',
+            'position_id'                => 'nullable|string',
             'is_optional'                => 'nullable|boolean',
             'can_delegate'               => 'nullable|boolean',
             'remarks'                    => 'nullable|string',
@@ -62,9 +62,9 @@ class WorkflowApproverController extends Controller
         try {
             WorkflowApprover::create([
                 'workflow_approval_stage_id' => $request->workflow_approval_stage_id,
-                'approval_type_id'           => $request->approval_type_id,
+                'approver_type_id'           => $request->approver_type_id,
                 'user_id'                    => $request->user_id,
-                'level'                      => $request->level,
+                'position_id'                => $request->position_id,
                 'is_optional'                => $request->boolean('is_optional'),
                 'can_delegate'               => $request->boolean('can_delegate'),
                 'remarks'                    => $request->remarks,
@@ -87,9 +87,9 @@ class WorkflowApproverController extends Controller
     {
         $request->validate([
             'workflow_approval_stage_id' => 'required|exists:workflow_approval_stages,id',
-            'approval_type_id'           => 'required|exists:approver_types,id',
+            'approver_type_id'           => 'required|exists:approver_types,id',
             'user_id'                    => 'nullable|exists:users,id',
-            'level'                      => 'required|integer|min:1',
+            'position_id'                => 'nullable|string',
             'is_optional'                => 'nullable|boolean',
             'can_delegate'               => 'nullable|boolean',
             'remarks'                    => 'nullable|string',
@@ -101,9 +101,9 @@ class WorkflowApproverController extends Controller
             $row = WorkflowApprover::findOrFail($id);
             $row->update([
                 'workflow_approval_stage_id' => $request->workflow_approval_stage_id,
-                'approval_type_id'           => $request->approval_type_id,
+                'approver_type_id'           => $request->approver_type_id,
                 'user_id'                    => $request->user_id,
-                'level'                      => $request->level,
+                'position_id'                => $request->position_id,
                 'is_optional'                => $request->boolean('is_optional'),
                 'can_delegate'               => $request->boolean('can_delegate'),
                 'remarks'                    => $request->remarks,

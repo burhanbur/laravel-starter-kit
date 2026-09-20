@@ -13,7 +13,6 @@ class WorkflowApprovalStageResource extends JsonResource
             'id'                   => $this->id,
             'workflow_approval_id' => $this->workflow_approval_id,
             'sequence'             => $this->sequence,
-            'level'                => $this->level,
             'approval_logic'       => $this->approval_logic,
             'name'                 => $this->name,
             'created_by'           => $this->created_by,

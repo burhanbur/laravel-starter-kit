@@ -11,7 +11,7 @@ class ApprovalHistoryController extends Controller
 {
     public function index(Request $request)
     {
-        $data = ApprovalHistory::with(['workflowRequest.workflowApproval.workflowDefinition', 'user'])
+        $data = ApprovalHistory::with(['workflowRequest.workflowApproval.workflowDefinition', 'actorUser'])
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -22,8 +22,8 @@ class ApprovalHistoryController extends Controller
     {
         $data = ApprovalHistory::with([
             'workflowRequest.workflowApproval.workflowDefinition',
-            'approval.approvalStatus',
-            'user',
+            'approval',
+            'actorUser',
         ])->findOrFail($id);
 
         return view('pages.approval.approval-history.show', get_defined_vars());

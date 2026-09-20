@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Approval;
 
 use App\Http\Requests\BaseFormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreWorkflowRequestRequest extends BaseFormRequest
 {
@@ -10,7 +11,13 @@ class StoreWorkflowRequestRequest extends BaseFormRequest
     {
         return [
             'workflow_approval_id' => ['required', 'string', 'exists:workflow_approvals,id'],
-            'request_code'         => ['required', 'string', 'max:255', 'unique:workflow_requests,request_code'],
+            'request_code'         => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('workflow_requests', 'request_code')
+                    ->where(fn ($query) => $query->where('request_source', $this->request_source)),
+            ],
             'request_source'       => ['required', 'string', 'max:255'],
             'callback_url'         => ['nullable', 'url', 'max:500'],
             'requester_id'         => ['required', 'string', 'exists:users,id'],

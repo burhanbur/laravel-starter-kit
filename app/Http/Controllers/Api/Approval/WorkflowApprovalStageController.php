@@ -29,10 +29,10 @@ class WorkflowApprovalStageController extends Controller
      *     security={{"ApiKeyAuth": {}}},
      *     @OA\Parameter(name="page", in="query", @OA\Schema(type="integer", default=1)),
      *     @OA\Parameter(name="limit", in="query", @OA\Schema(type="integer", default=15, maximum=100)),
-     *     @OA\Parameter(name="sort_by", in="query", @OA\Schema(type="string", enum={"id","level","sequence","created_at"}, default="level")),
+     *     @OA\Parameter(name="sort_by", in="query", @OA\Schema(type="string", enum={"id","sequence","name","created_at"}, default="sequence")),
      *     @OA\Parameter(name="sort_order", in="query", @OA\Schema(type="string", enum={"asc","desc"}, default="asc")),
      *     @OA\Parameter(name="filter[workflow_approval_id]", in="query", @OA\Schema(type="string", format="uuid")),
-     *     @OA\Parameter(name="filter[level]", in="query", @OA\Schema(type="integer")),
+     *     @OA\Parameter(name="filter[sequence]", in="query", @OA\Schema(type="integer")),
      *     @OA\Parameter(name="filter[approval_logic]", in="query", @OA\Schema(type="string", enum={"ALL","ANY"})),
      *     @OA\Response(response=200, description="OK"),
      *     @OA\Response(response=401, description="Unauthorized"),
@@ -46,24 +46,24 @@ class WorkflowApprovalStageController extends Controller
             $validated = $request->validate([
                 'page'        => 'integer|min:1',
                 'limit'       => 'integer|min:1|max:100',
-                'sort_by'     => 'string|in:id,level,sequence,created_at',
+                'sort_by'     => 'string|in:id,sequence,name,created_at',
                 'sort_order'  => 'string|in:asc,desc',
                 'filter'      => 'array',
                 'filter_type' => 'array',
             ]);
 
             $limit       = $validated['limit'] ?? 15;
-            $sortBy      = $validated['sort_by'] ?? 'level';
+            $sortBy      = $validated['sort_by'] ?? 'sequence';
             $sortOrder   = $validated['sort_order'] ?? 'asc';
             $filters     = $validated['filter'] ?? [];
             $filterTypes = $request->input('filter_type', []);
 
             $query = WorkflowApprovalStage::query()
-                ->select(['id', 'workflow_approval_id', 'level', 'sequence', 'name', 'approval_logic', 'created_by', 'updated_by', 'created_at', 'updated_at'])
-                ->with(['workflowApprovers:id,workflow_approval_stage_id,approval_type_id,user_id,level']);
+                ->select(['id', 'workflow_approval_id', 'sequence', 'name', 'approval_logic', 'created_by', 'updated_by', 'created_at', 'updated_at'])
+                ->with(['workflowApprovers:id,workflow_approval_stage_id,approver_type_id,user_id,position_id,is_optional,can_delegate']);
 
             $query = $this->applyDynamicFilters($query, $filters, $filterTypes,
-                ['id', 'workflow_approval_id', 'level', 'approval_logic'],
+                ['id', 'workflow_approval_id', 'sequence', 'approval_logic'],
                 []
             );
 
@@ -126,9 +126,8 @@ class WorkflowApprovalStageController extends Controller
      *     security={{"ApiKeyAuth": {}}},
      *     @OA\RequestBody(required=true,
      *         @OA\JsonContent(
-     *             required={"workflow_approval_id","level","name","approval_logic"},
+     *             required={"workflow_approval_id","sequence","name","approval_logic"},
      *             @OA\Property(property="workflow_approval_id", type="string", format="uuid"),
-     *             @OA\Property(property="level", type="integer", example=1),
      *             @OA\Property(property="sequence", type="integer", example=1),
      *             @OA\Property(property="name", type="string", example="Manager Approval"),
      *             @OA\Property(property="approval_logic", type="string", enum={"ALL","ANY"})
@@ -168,7 +167,6 @@ class WorkflowApprovalStageController extends Controller
      *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="string", format="uuid")),
      *     @OA\RequestBody(required=true,
      *         @OA\JsonContent(
-     *             @OA\Property(property="level", type="integer"),
      *             @OA\Property(property="sequence", type="integer"),
      *             @OA\Property(property="name", type="string"),
      *             @OA\Property(property="approval_logic", type="string", enum={"ALL","ANY"})

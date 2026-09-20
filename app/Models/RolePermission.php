@@ -2,15 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class RolePermission extends MultiplePrimaryKey
 {
     use HasFactory;
 
-    protected $primaryKey = ['role_id', 'route_id'];
     protected $table = 'role_permissions';
+    protected $primaryKey = ['role_id', 'route_id'];
     public $incrementing = false;
 
     protected $fillable = [
@@ -20,7 +19,7 @@ class RolePermission extends MultiplePrimaryKey
     ];
 
     /**
-     * Get the role that owns the user role.
+     * Get the role that owns the role permission.
      */
     public function role()
     {
@@ -28,7 +27,7 @@ class RolePermission extends MultiplePrimaryKey
     }
 
     /**
-     * Get the user that owns the user role.
+     * Get the route that owns the role permission.
      */
     public function route()
     {

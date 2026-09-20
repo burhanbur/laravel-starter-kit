@@ -60,15 +60,14 @@ class ListApiKeys extends Command
         }
 
         $this->table(
-            ['ID', 'Name', 'Application', 'Masked Key', 'Status', 'Rate Limit', 'Last Used', 'Expires At'],
+            ['Prefix', 'Name', 'Application', 'Status', 'Rate Limit', 'Last Used', 'Expires At'],
             $apiKeys->map(function ($key) {
                 $status = $key->isValid() ? '<fg=green>Active</>' : '<fg=red>Inactive</>';
                 
                 return [
-                    $key->id,
+                    $key->key_prefix,
                     $key->name,
                     $key->application ?? 'N/A',
-                    $key->masked_key,
                     $status,
                     $key->rate_limit . '/min',
                     $key->last_used_at ? $key->last_used_at->diffForHumans() : 'Never',

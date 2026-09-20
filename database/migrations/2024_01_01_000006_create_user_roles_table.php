@@ -6,26 +6,20 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('user_roles', function (Blueprint $table) {
-            $table->char('role_id', 36);
-            $table->char('user_id', 36);
-            $table->char('created_by', 36)->nullable();
+            $table->uuid('role_id');
+            $table->uuid('user_id');
+            $table->uuid('created_by')->nullable();
             $table->timestamps();
 
             $table->primary(['role_id', 'user_id']);
-            $table->foreign('role_id')->references('id')->on('roles')->onDelete('cascade');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('role_id')->references('id')->on('roles')->cascadeOnDelete();
+            $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('user_roles');

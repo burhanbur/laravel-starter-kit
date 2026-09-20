@@ -16,6 +16,16 @@ class RouteSeeder extends Seeder
         DB::table('routes')->delete();
 
         $routes = [
+            // Dashboard
+            [
+                'name' => 'dashboard',
+                'method' => 'GET',
+                'module' => 'Dashboard',
+                'description' => 'Menampilkan dashboard utama',
+                'created_by' => null,
+                'updated_by' => null,
+            ],
+
             // Users
             [
                 'name' => 'user.index',

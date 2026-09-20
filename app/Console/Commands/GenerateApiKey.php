@@ -4,7 +4,6 @@ namespace App\Console\Commands;
 
 use App\Models\ApiKey;
 use Illuminate\Console\Command;
-use Illuminate\Support\Str;
 
 class GenerateApiKey extends Command
 {
@@ -77,13 +76,13 @@ class GenerateApiKey extends Command
             }
         }
 
-        // Generate API key
+        // Generate the secret once; only its prefix and SHA-256 digest are persisted.
         $key = ApiKey::generate();
 
-        // Create API key record
         $apiKey = ApiKey::create([
             'name' => $name,
-            'key' => $key,
+            'key_prefix' => ApiKey::prefixFromRawKey($key),
+            'key_hash' => ApiKey::hashRawKey($key),
             'description' => $description,
             'application' => $application,
             'ip_whitelist' => $ipWhitelist,

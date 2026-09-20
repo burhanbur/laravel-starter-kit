@@ -11,7 +11,6 @@ class ApprovalStatusResource extends JsonResource
     {
         return [
             'id'                   => $this->id,
-            'workflow_approval_id' => $this->workflow_approval_id,
             'code'                 => $this->code,
             'name'                 => $this->name,
             'description'          => $this->description,

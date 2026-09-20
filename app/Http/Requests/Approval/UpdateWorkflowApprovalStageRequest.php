@@ -10,9 +10,8 @@ class UpdateWorkflowApprovalStageRequest extends BaseFormRequest
     {
         return [
             'sequence'       => ['sometimes', 'required', 'integer', 'min:1'],
-            'level'          => ['sometimes', 'required', 'integer', 'min:1'],
             'approval_logic' => ['sometimes', 'required', 'string', 'in:ALL,ANY'],
-            'name'           => ['nullable', 'string', 'max:255'],
+            'name'           => ['sometimes', 'required', 'string', 'max:255'],
         ];
     }
 

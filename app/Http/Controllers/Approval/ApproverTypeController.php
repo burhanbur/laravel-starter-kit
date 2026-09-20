@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Log;
 
 use App\Models\ApproverType;
+use Illuminate\Validation\Rule;
 
 use Exception;
 
@@ -44,6 +45,7 @@ class ApproverTypeController extends Controller
 
         try {
             ApproverType::create([
+                'code'        => strtoupper($request->code),
                 'name'        => $request->name,
                 'description' => $request->description,
                 'created_by'  => auth()->id(),
@@ -64,6 +66,7 @@ class ApproverTypeController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
+            'code'        => ['required', 'string', 'max:50', Rule::unique('approver_types', 'code')->ignore($id)],
             'name'        => 'required|string|max:255',
             'description' => 'nullable|string',
         ]);
@@ -73,6 +76,7 @@ class ApproverTypeController extends Controller
         try {
             $row = ApproverType::findOrFail($id);
             $row->update([
+                'code'        => strtoupper($request->code),
                 'name'        => $request->name,
                 'description' => $request->description,
                 'updated_by'  => auth()->id(),

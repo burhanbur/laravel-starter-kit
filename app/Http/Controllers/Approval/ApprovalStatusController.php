@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Log;
 
 use App\Models\ApprovalStatus;
-use App\Models\WorkflowApproval;
+use Illuminate\Validation\Rule;
 
 use Exception;
 
@@ -17,22 +17,19 @@ class ApprovalStatusController extends Controller
 {
     public function index(Request $request)
     {
-        $data = ApprovalStatus::with(['workflowApproval.workflowDefinition'])->orderBy('code', 'asc')->get();
+        $data = ApprovalStatus::orderBy('code', 'asc')->get();
 
         return view('pages.approval.approval-status.index', get_defined_vars());
     }
 
     public function create(Request $request)
     {
-        $workflowApprovals = WorkflowApproval::with('workflowDefinition')->orderBy('created_at', 'desc')->get();
-
         return view('pages.approval.approval-status.create', get_defined_vars())->renderSections()['content'];
     }
 
     public function edit($id)
     {
         $data = ApprovalStatus::findOrFail($id);
-        $workflowApprovals = WorkflowApproval::with('workflowDefinition')->orderBy('created_at', 'desc')->get();
 
         return view('pages.approval.approval-status.edit', get_defined_vars())->renderSections()['content'];
     }
@@ -40,8 +37,7 @@ class ApprovalStatusController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'workflow_approval_id' => 'required|exists:workflow_approvals,id',
-            'code'                 => 'required|string|max:50',
+            'code'                 => 'required|string|max:50|unique:approval_statuses,code',
             'name'                 => 'required|string|max:255',
             'description'          => 'nullable|string',
         ]);
@@ -50,8 +46,7 @@ class ApprovalStatusController extends Controller
 
         try {
             ApprovalStatus::create([
-                'workflow_approval_id' => $request->workflow_approval_id,
-                'code'                 => $request->code,
+                'code'                 => strtoupper($request->code),
                 'name'                 => $request->name,
                 'description'          => $request->description,
                 'created_by'           => auth()->id(),
@@ -72,8 +67,7 @@ class ApprovalStatusController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'workflow_approval_id' => 'required|exists:workflow_approvals,id',
-            'code'                 => 'required|string|max:50',
+            'code'                 => ['required', 'string', 'max:50', Rule::unique('approval_statuses', 'code')->ignore($id)],
             'name'                 => 'required|string|max:255',
             'description'          => 'nullable|string',
         ]);
@@ -83,8 +77,7 @@ class ApprovalStatusController extends Controller
         try {
             $row = ApprovalStatus::findOrFail($id);
             $row->update([
-                'workflow_approval_id' => $request->workflow_approval_id,
-                'code'                 => $request->code,
+                'code'                 => strtoupper($request->code),
                 'name'                 => $request->name,
                 'description'          => $request->description,
                 'updated_by'           => auth()->id(),

@@ -29,12 +29,12 @@ class ApprovalController extends Controller
      *     security={{"ApiKeyAuth": {}}},
      *     @OA\Parameter(name="page", in="query", @OA\Schema(type="integer", default=1)),
      *     @OA\Parameter(name="limit", in="query", @OA\Schema(type="integer", default=15, maximum=100)),
-     *     @OA\Parameter(name="sort_by", in="query", @OA\Schema(type="string", enum={"id","level","created_at"}, default="level")),
-     *     @OA\Parameter(name="sort_order", in="query", @OA\Schema(type="string", enum={"asc","desc"}, default="asc")),
+     *     @OA\Parameter(name="sort_by", in="query", @OA\Schema(type="string", enum={"id","decision","acted_at","created_at"}, default="acted_at")),
+     *     @OA\Parameter(name="sort_order", in="query", @OA\Schema(type="string", enum={"asc","desc"}, default="desc")),
      *     @OA\Parameter(name="filter[workflow_request_id]", in="query", @OA\Schema(type="string", format="uuid")),
-     *     @OA\Parameter(name="filter[user_id]", in="query", @OA\Schema(type="string", format="uuid")),
-     *     @OA\Parameter(name="filter[approval_status_id]", in="query", @OA\Schema(type="string", format="uuid")),
-     *     @OA\Parameter(name="filter[level]", in="query", @OA\Schema(type="integer")),
+     *     @OA\Parameter(name="filter[workflow_approver_id]", in="query", @OA\Schema(type="string", format="uuid")),
+     *     @OA\Parameter(name="filter[actor_user_id]", in="query", @OA\Schema(type="string", format="uuid")),
+     *     @OA\Parameter(name="filter[decision]", in="query", @OA\Schema(type="string", enum={"APPROVED","REJECTED"})),
      *     @OA\Response(response=200, description="OK"),
      *     @OA\Response(response=401, description="Unauthorized"),
      *     @OA\Response(response=422, description="Validation Error"),
@@ -47,27 +47,28 @@ class ApprovalController extends Controller
             $validated = $request->validate([
                 'page'        => 'integer|min:1',
                 'limit'       => 'integer|min:1|max:100',
-                'sort_by'     => 'string|in:id,level,created_at',
+                'sort_by'     => 'string|in:id,decision,acted_at,created_at',
                 'sort_order'  => 'string|in:asc,desc',
                 'filter'      => 'array',
                 'filter_type' => 'array',
             ]);
 
             $limit       = $validated['limit'] ?? 15;
-            $sortBy      = $validated['sort_by'] ?? 'level';
-            $sortOrder   = $validated['sort_order'] ?? 'asc';
+            $sortBy      = $validated['sort_by'] ?? 'acted_at';
+            $sortOrder   = $validated['sort_order'] ?? 'desc';
             $filters     = $validated['filter'] ?? [];
             $filterTypes = $request->input('filter_type', []);
 
             $query = Approval::query()
-                ->select(['id', 'workflow_request_id', 'workflow_approval_stage_id', 'workflow_approval_id', 'approval_type_id', 'approval_status_id', 'user_id', 'level', 'note', 'acted_at', 'created_at', 'updated_at'])
-                ->with([
-                    'approvalStatus:id,code,name',
-                    'approverType:id,name',
+                ->select([
+                    'id', 'workflow_request_id', 'workflow_approval_stage_id',
+                    'workflow_approver_id', 'delegated_approver_id', 'actor_user_id',
+                    'actor_position_id', 'decision', 'note', 'qrcode_path',
+                    'signature_hash', 'signature_key_version', 'acted_at', 'created_at',
                 ]);
 
             $query = $this->applyDynamicFilters($query, $filters, $filterTypes,
-                ['id', 'workflow_request_id', 'user_id', 'approval_status_id', 'level'],
+                ['id', 'workflow_request_id', 'workflow_approver_id', 'actor_user_id', 'decision'],
                 []
             );
 
@@ -113,7 +114,7 @@ class ApprovalController extends Controller
     public function show($id)
     {
         try {
-            $data = Approval::with(['workflowRequest', 'workflowApprovalStage', 'approvalStatus', 'approverType', 'user'])->findOrFail($id);
+            $data = Approval::with(['workflowRequest', 'workflowApprovalStage', 'workflowApprover', 'delegatedApprover', 'actorUser'])->findOrFail($id);
             return $this->successResponse(new ApprovalResource($data), 'Approval retrieved successfully');
         } catch (Exception $e) {
             Log::error('Failed to retrieve approval', ['id' => $id, 'error' => $e->getMessage()]);
@@ -156,7 +157,7 @@ class ApprovalController extends Controller
             Cache::flush();
 
             return $this->successResponse(
-                new ApprovalResource($approval->load(['approvalStatus', 'approverType'])),
+                new ApprovalResource($approval),
                 'Approval berhasil diproses'
             );
         } catch (Exception $e) {

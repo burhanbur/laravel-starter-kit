@@ -31,15 +31,19 @@ class ValidateApiKey
                 401
             );
         } else {
-            // Cache API key lookup for 5 minutes to reduce DB queries
-            $cacheKey = 'api_key_' . md5($apiKey);
-            $apiKeyModel = Cache::remember($cacheKey, now()->addMinutes(5), function () use ($apiKey) {
-                return ApiKey::where('key', $apiKey)->first();
+            $keyHash = ApiKey::hashRawKey($apiKey);
+            $keyPrefix = ApiKey::prefixFromRawKey($apiKey);
+            $cacheKey = 'api_key_' . $keyHash;
+            $apiKeyModel = Cache::remember($cacheKey, now()->addMinutes(5), function () use ($keyHash, $keyPrefix) {
+                return ApiKey::query()
+                    ->where('key_prefix', $keyPrefix)
+                    ->where('key_hash', $keyHash)
+                    ->first();
             });
 
-            if (!$apiKeyModel) {
+            if (!$apiKeyModel || !hash_equals($apiKeyModel->key_hash, $keyHash)) {
                 Log::warning('Invalid API key attempt', [
-                    'api_key' => substr($apiKey, 0, 10) . '...',
+                    'key_prefix' => $keyPrefix,
                     'ip' => $request->ip(),
                     'url' => $request->fullUrl(),
                 ]);

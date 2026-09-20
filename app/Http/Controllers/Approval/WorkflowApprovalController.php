@@ -41,17 +41,22 @@ class WorkflowApprovalController extends Controller
     {
         $request->validate([
             'workflow_definition_id' => 'required|exists:workflow_definitions,id',
-            'version'                => 'required|string|max:50',
-            'is_active'              => 'nullable|boolean',
+            'version'                => 'required|integer|min:1',
+            'status'                 => 'required|in:DRAFT,PUBLISHED,RETIRED',
+            'published_at'           => 'nullable|date',
         ]);
 
         DB::beginTransaction();
 
         try {
+            $status = strtoupper($request->status);
+            $publishedAt = $request->published_at ? now()->parse($request->published_at) : ($status === 'PUBLISHED' ? now() : null);
+
             WorkflowApproval::create([
                 'workflow_definition_id' => $request->workflow_definition_id,
-                'version'                => $request->version,
-                'is_active'              => $request->boolean('is_active'),
+                'version'                => (int) $request->version,
+                'status'                 => $status,
+                'published_at'           => $publishedAt,
                 'created_by'             => auth()->id(),
                 'updated_by'             => auth()->id(),
             ]);
@@ -71,18 +76,25 @@ class WorkflowApprovalController extends Controller
     {
         $request->validate([
             'workflow_definition_id' => 'required|exists:workflow_definitions,id',
-            'version'                => 'required|string|max:50',
-            'is_active'              => 'nullable|boolean',
+            'version'                => 'required|integer|min:1',
+            'status'                 => 'required|in:DRAFT,PUBLISHED,RETIRED',
+            'published_at'           => 'nullable|date',
         ]);
 
         DB::beginTransaction();
 
         try {
             $row = WorkflowApproval::findOrFail($id);
+            $status = strtoupper($request->status);
+            $publishedAt = $request->filled('published_at')
+                ? now()->parse($request->published_at)
+                : ($status === 'PUBLISHED' && !$row->published_at ? now() : $row->published_at);
+
             $row->update([
                 'workflow_definition_id' => $request->workflow_definition_id,
-                'version'                => $request->version,
-                'is_active'              => $request->boolean('is_active'),
+                'version'                => (int) $request->version,
+                'status'                 => $status,
+                'published_at'           => $publishedAt,
                 'updated_by'             => auth()->id(),
             ]);
 

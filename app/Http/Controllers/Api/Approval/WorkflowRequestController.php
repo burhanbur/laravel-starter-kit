@@ -33,7 +33,7 @@ class WorkflowRequestController extends Controller
      *     @OA\Parameter(name="sort_order", in="query", @OA\Schema(type="string", enum={"asc","desc"}, default="desc")),
      *     @OA\Parameter(name="filter[request_source]", in="query", @OA\Schema(type="string")),
      *     @OA\Parameter(name="filter[requester_id]", in="query", @OA\Schema(type="string", format="uuid")),
-     *     @OA\Parameter(name="filter[current_approval_status_id]", in="query", @OA\Schema(type="string", format="uuid")),
+     *     @OA\Parameter(name="filter[approval_status_id]", in="query", @OA\Schema(type="string", format="uuid")),
      *     @OA\Response(response=200, description="OK"),
      *     @OA\Response(response=401, description="Unauthorized"),
      *     @OA\Response(response=422, description="Validation Error"),
@@ -59,15 +59,16 @@ class WorkflowRequestController extends Controller
             $filterTypes = $request->input('filter_type', []);
 
             $query = WorkflowRequest::query()
-                ->select(['id', 'workflow_approval_id', 'request_source', 'reference_id', 'requester_id', 'current_approval_status_id', 'created_by', 'updated_by', 'created_at', 'updated_at'])
+                ->select(['id', 'workflow_approval_id', 'request_code', 'request_source', 'requester_id', 'current_stage_id', 'approval_status_id', 'callback_url', 'remarks', 'completed_at', 'created_by', 'updated_by', 'created_at', 'updated_at'])
                 ->with([
-                    'workflowApproval:id,workflow_definition_id,version',
-                    'currentApprovalStatus:id,code,name',
+                    'workflowApproval:id,workflow_definition_id,version,status',
+                    'approvalStatus:id,code,name',
+                    'currentStage:id,name,sequence',
                 ]);
 
             $query = $this->applyDynamicFilters($query, $filters, $filterTypes,
-                ['id', 'request_source', 'requester_id', 'current_approval_status_id', 'workflow_approval_id'],
-                ['workflowApproval', 'currentApprovalStatus']
+                ['id', 'request_code', 'request_source', 'requester_id', 'approval_status_id', 'workflow_approval_id'],
+                ['workflowApproval', 'approvalStatus', 'currentStage']
             );
 
             $query->orderBy($sortBy, $sortOrder);
@@ -114,10 +115,10 @@ class WorkflowRequestController extends Controller
         try {
             $data = WorkflowRequest::with([
                 'workflowApproval.workflowDefinition',
-                'currentApprovalStatus',
+                'approvalStatus',
+                'currentStage',
                 'requester',
-                'approvals.approvalStatus',
-                'approvals.approverType',
+                'approvals',
                 'approvalHistories',
             ])->findOrFail($id);
             return $this->successResponse(new WorkflowRequestResource($data), 'Workflow request retrieved successfully');
@@ -136,10 +137,11 @@ class WorkflowRequestController extends Controller
      *     security={{"ApiKeyAuth": {}}},
      *     @OA\RequestBody(required=true,
      *         @OA\JsonContent(
-     *             required={"workflow_approval_id","request_source"},
+     *             required={"workflow_approval_id","request_code","request_source","requester_id"},
      *             @OA\Property(property="workflow_approval_id", type="string", format="uuid"),
+     *             @OA\Property(property="request_code", type="string", example="LEAVE-2026-001"),
      *             @OA\Property(property="request_source", type="string", example="LEAVE"),
-     *             @OA\Property(property="reference_id", type="string", nullable=true)
+     *             @OA\Property(property="requester_id", type="string", format="uuid")
      *         )
      *     ),
      *     @OA\Response(response=201, description="Created"),
@@ -157,7 +159,7 @@ class WorkflowRequestController extends Controller
             Cache::flush();
 
             return $this->successResponse(
-                new WorkflowRequestResource($workflowRequest->load(['workflowApproval', 'currentApprovalStatus'])),
+                new WorkflowRequestResource($workflowRequest->load(['workflowApproval', 'approvalStatus', 'currentStage'])),
                 'Workflow request berhasil disubmit',
                 201
             );

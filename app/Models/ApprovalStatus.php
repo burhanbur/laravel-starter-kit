@@ -2,22 +2,21 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Str;
 
 class ApprovalStatus extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $table = 'approval_status';
+    protected $table = 'approval_statuses';
     protected $primaryKey = 'id';
     public $incrementing = false;
     protected $keyType = 'string';
 
     protected $fillable = [
-        'workflow_approval_id',
         'code',
         'name',
         'description',
@@ -26,28 +25,15 @@ class ApprovalStatus extends Model
         'deleted_by',
     ];
 
-    protected static function boot()
+    protected static function booted(): void
     {
-        parent::boot();
-        static::creating(function ($model) {
-            if (empty($model->{$model->getKeyName()})) {
-                $model->{$model->getKeyName()} = (string) Str::uuid();
-            }
+        static::creating(function (ApprovalStatus $status): void {
+            $status->id ??= (string) uuidv7();
         });
-    }
-
-    public function workflowApproval()
-    {
-        return $this->belongsTo(WorkflowApproval::class, 'workflow_approval_id');
     }
 
     public function workflowRequests()
     {
-        return $this->hasMany(WorkflowRequest::class, 'current_approval_status_id');
-    }
-
-    public function approvals()
-    {
-        return $this->hasMany(Approval::class, 'approval_status_id');
+        return $this->hasMany(WorkflowRequest::class, 'approval_status_id');
     }
 }

@@ -392,7 +392,7 @@
                     <div class="info-item">
                         <div style="flex:1; min-width:0;">
                             <div class="info-label">Request ID</div>
-                            <div class="info-value" id="request-id">{{ (string) Str::uuid() }}</div>
+                            <div class="info-value" id="request-id">{{ (string) uuidv7() }}</div>
                         </div>
                         <div style="display:flex; align-items:center; gap:8px;">
                             <button type="button" id="copy-request-id" class="copy-btn" onclick="copyToClipboard('request-id')" aria-label="Copy Request ID">Copy</button>

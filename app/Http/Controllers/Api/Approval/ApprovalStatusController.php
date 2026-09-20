@@ -59,10 +59,10 @@ class ApprovalStatusController extends Controller
             $filterTypes = $request->input('filter_type', []);
 
             $query = ApprovalStatus::query()
-                ->select(['id', 'workflow_approval_id', 'code', 'name', 'description', 'created_by', 'updated_by', 'created_at', 'updated_at']);
+                ->select(['id', 'code', 'name', 'description', 'created_by', 'updated_by', 'created_at', 'updated_at']);
 
             $query = $this->applyDynamicFilters($query, $filters, $filterTypes,
-                ['id', 'workflow_approval_id', 'code', 'name'],
+                ['id', 'code', 'name'],
                 []
             );
 

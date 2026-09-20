@@ -6,37 +6,31 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('workflow_approvers', function (Blueprint $table) {
-            $table->char('id', 36)->primary();
-            $table->char('workflow_approval_stage_id', 36);
-            $table->char('approval_type_id', 36);
-            $table->char('user_id', 36)->nullable();
-            $table->char('position_id', 36)->nullable();
-            $table->smallInteger('level')->comment('Order of approval sequence');
+            $table->uuid('id')->primary();
+            $table->uuid('workflow_approval_stage_id');
+            $table->uuid('approver_type_id');
+            $table->uuid('user_id')->nullable();
+            $table->uuid('position_id')->nullable();
             $table->boolean('is_optional')->default(false);
             $table->boolean('can_delegate')->default(true);
             $table->text('remarks')->nullable();
-            $table->char('created_by', 36)->nullable();
-            $table->char('updated_by', 36)->nullable();
-            $table->char('deleted_by', 36)->nullable();
-            $table->softDeletes();
+            $table->uuid('created_by')->nullable();
+            $table->uuid('updated_by')->nullable();
+            $table->uuid('deleted_by')->nullable();
             $table->timestamps();
-        });
+            $table->softDeletes();
 
-        Schema::table('workflow_approvers', function (Blueprint $table) {
-            $table->foreign('workflow_approval_stage_id')->references('id')->on('workflow_approval_stages')->onDelete('cascade');
-            $table->foreign('approval_type_id')->references('id')->on('approver_types')->onDelete('cascade');
+            $table->foreign('workflow_approval_stage_id')->references('id')->on('workflow_approval_stages')->cascadeOnDelete();
+            $table->foreign('approver_type_id')->references('id')->on('approver_types')->restrictOnDelete();
+            $table->foreign('user_id')->references('id')->on('users')->nullOnDelete();
+            $table->unique(['workflow_approval_stage_id', 'user_id']);
+            $table->unique(['workflow_approval_stage_id', 'position_id']);
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('workflow_approvers');

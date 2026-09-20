@@ -2,14 +2,16 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use LogicException;
 
 class Approval extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
+
+    public const UPDATED_AT = null;
 
     protected $table = 'approvals';
     protected $primaryKey = 'id';
@@ -19,35 +21,33 @@ class Approval extends Model
     protected $fillable = [
         'workflow_request_id',
         'workflow_approval_stage_id',
-        'workflow_approval_id',
-        'approval_type_id',
-        'approval_status_id',
-        'user_id',
-        'position_id',
-        'delegate_from_user_id',
-        'delegate_from_position_id',
-        'level',
+        'workflow_approver_id',
+        'delegated_approver_id',
+        'actor_user_id',
+        'actor_position_id',
+        'decision',
+        'note',
         'qrcode_path',
         'signature_hash',
-        'note',
-        'approved_at',
-        'created_by',
-        'updated_by',
-        'deleted_by',
+        'signature_key_version',
+        'acted_at',
     ];
 
-    protected $casts = [
-        'approved_at' => 'datetime',
-    ];
-
-    protected static function boot()
+    protected function casts(): array
     {
-        parent::boot();
-        static::creating(function ($model) {
-            if (empty($model->{$model->getKeyName()})) {
-                $model->{$model->getKeyName()} = (string) Str::uuid();
-            }
+        return [
+            'signature_key_version' => 'integer',
+            'acted_at' => 'datetime',
+        ];
+    }
+
+    protected static function booted(): void
+    {
+        static::creating(function (Approval $approval): void {
+            $approval->id ??= (string) uuidv7();
         });
+        static::updating(fn () => throw new LogicException('Approval decisions are immutable.'));
+        static::deleting(fn () => throw new LogicException('Approval decisions are append-only.'));
     }
 
     public function workflowRequest()
@@ -60,24 +60,19 @@ class Approval extends Model
         return $this->belongsTo(WorkflowApprovalStage::class, 'workflow_approval_stage_id');
     }
 
-    public function workflowApproval()
+    public function workflowApprover()
     {
-        return $this->belongsTo(WorkflowApproval::class, 'workflow_approval_id');
+        return $this->belongsTo(WorkflowApprover::class, 'workflow_approver_id');
     }
 
-    public function approverType()
+    public function delegatedApprover()
     {
-        return $this->belongsTo(ApproverType::class, 'approval_type_id');
+        return $this->belongsTo(DelegatedApprover::class, 'delegated_approver_id');
     }
 
-    public function approvalStatus()
+    public function actorUser()
     {
-        return $this->belongsTo(ApprovalStatus::class, 'approval_status_id');
-    }
-
-    public function user()
-    {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'actor_user_id');
     }
 
     public function approvalHistories()

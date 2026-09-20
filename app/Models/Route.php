@@ -39,17 +39,23 @@ class Route extends Model
         });
     }
 
-    /**
-     * Get the role menus for the route.
-     */
     public function roleMenus()
     {
         return $this->hasMany(RoleMenu::class, 'route_id');
     }
 
+    /**
+     * Get the role permission records for the route.
+     */
+    public function rolePermissions()
+    {
+        return $this->hasMany(RolePermission::class, 'route_id');
+    }
+
     public function roles()
     {
         return $this->belongsToMany(Role::class, 'role_permissions', 'route_id', 'role_id')
+                    ->withPivot(['created_by'])
                     ->withTimestamps();
     }
 

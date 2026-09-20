@@ -19,7 +19,8 @@ class StoreWorkflowApprovalRequest extends BaseFormRequest
                     return $query->where('workflow_definition_id', $this->workflow_definition_id);
                 }),
             ],
-            'is_active' => ['nullable', 'boolean'],
+            'status'       => ['nullable', 'string', 'in:DRAFT,PUBLISHED,RETIRED'],
+            'published_at' => ['nullable', 'date'],
         ];
     }
 

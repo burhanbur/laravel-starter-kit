@@ -2,15 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class UserRole extends MultiplePrimaryKey
 {
     use HasFactory;
 
-    protected $primaryKey = ['role_id', 'user_id'];
     protected $table = 'user_roles';
+    protected $primaryKey = ['role_id', 'user_id'];
     public $incrementing = false;
 
     protected $fillable = [

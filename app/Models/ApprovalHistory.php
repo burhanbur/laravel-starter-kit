@@ -2,14 +2,16 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use LogicException;
 
 class ApprovalHistory extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
+
+    public const UPDATED_AT = null;
 
     protected $table = 'approval_histories';
     protected $primaryKey = 'id';
@@ -19,28 +21,24 @@ class ApprovalHistory extends Model
     protected $fillable = [
         'workflow_request_id',
         'approval_id',
-        'user_id',
+        'actor_user_id',
         'action',
         'note',
-        'qrcode_path',
-        'signature_hash',
-        'approved_at',
-        'created_by',
-        'updated_by',
+        'metadata',
     ];
 
-    protected $casts = [
-        'approved_at' => 'datetime',
-    ];
-
-    protected static function boot()
+    protected function casts(): array
     {
-        parent::boot();
-        static::creating(function ($model) {
-            if (empty($model->{$model->getKeyName()})) {
-                $model->{$model->getKeyName()} = (string) Str::uuid();
-            }
+        return ['metadata' => 'array'];
+    }
+
+    protected static function booted(): void
+    {
+        static::creating(function (ApprovalHistory $history): void {
+            $history->id ??= (string) uuidv7();
         });
+        static::updating(fn () => throw new LogicException('Approval history is immutable.'));
+        static::deleting(fn () => throw new LogicException('Approval history is append-only.'));
     }
 
     public function workflowRequest()
@@ -53,8 +51,8 @@ class ApprovalHistory extends Model
         return $this->belongsTo(Approval::class, 'approval_id');
     }
 
-    public function user()
+    public function actorUser()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'actor_user_id');
     }
 }

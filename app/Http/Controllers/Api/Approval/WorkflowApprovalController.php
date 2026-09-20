@@ -29,11 +29,11 @@ class WorkflowApprovalController extends Controller
      *     security={{"ApiKeyAuth": {}}},
      *     @OA\Parameter(name="page", in="query", @OA\Schema(type="integer", default=1)),
      *     @OA\Parameter(name="limit", in="query", @OA\Schema(type="integer", default=15, maximum=100)),
-     *     @OA\Parameter(name="sort_by", in="query", @OA\Schema(type="string", enum={"id","version","is_active","created_at"}, default="created_at")),
+     *     @OA\Parameter(name="sort_by", in="query", @OA\Schema(type="string", enum={"id","version","status","published_at","created_at"}, default="created_at")),
      *     @OA\Parameter(name="sort_order", in="query", @OA\Schema(type="string", enum={"asc","desc"}, default="desc")),
      *     @OA\Parameter(name="filter[workflow_definition_id]", in="query", @OA\Schema(type="string", format="uuid")),
      *     @OA\Parameter(name="filter[version]", in="query", @OA\Schema(type="integer")),
-     *     @OA\Parameter(name="filter[is_active]", in="query", @OA\Schema(type="integer", enum={0,1})),
+     *     @OA\Parameter(name="filter[status]", in="query", @OA\Schema(type="string", enum={"DRAFT","PUBLISHED","RETIRED"})),
      *     @OA\Response(response=200, description="OK"),
      *     @OA\Response(response=401, description="Unauthorized"),
      *     @OA\Response(response=422, description="Validation Error"),
@@ -46,7 +46,7 @@ class WorkflowApprovalController extends Controller
             $validated = $request->validate([
                 'page'        => 'integer|min:1',
                 'limit'       => 'integer|min:1|max:100',
-                'sort_by'     => 'string|in:id,version,is_active,created_at',
+                'sort_by'     => 'string|in:id,version,status,published_at,created_at',
                 'sort_order'  => 'string|in:asc,desc',
                 'filter'      => 'array',
                 'filter_type' => 'array',
@@ -59,11 +59,11 @@ class WorkflowApprovalController extends Controller
             $filterTypes = $request->input('filter_type', []);
 
             $query = WorkflowApproval::query()
-                ->select(['id', 'workflow_definition_id', 'version', 'is_active', 'created_by', 'updated_by', 'created_at', 'updated_at'])
+                ->select(['id', 'workflow_definition_id', 'version', 'status', 'published_at', 'created_by', 'updated_by', 'created_at', 'updated_at'])
                 ->with(['workflowDefinition:id,code,name']);
 
             $query = $this->applyDynamicFilters($query, $filters, $filterTypes,
-                ['id', 'workflow_definition_id', 'version', 'is_active'],
+                ['id', 'workflow_definition_id', 'version', 'status'],
                 ['workflowDefinition']
             );
 
@@ -111,8 +111,7 @@ class WorkflowApprovalController extends Controller
         try {
             $data = WorkflowApproval::with([
                 'workflowDefinition:id,code,name',
-                'stages.workflowApprovers.approverType:id,name',
-                'approvalStatuses:id,workflow_approval_id,code,name',
+                'stages.workflowApprovers.approverType:id,code,name',
             ])->findOrFail($id);
             return $this->successResponse(new WorkflowApprovalResource($data), 'Workflow approval retrieved successfully');
         } catch (Exception $e) {
@@ -133,7 +132,8 @@ class WorkflowApprovalController extends Controller
      *             required={"workflow_definition_id","version"},
      *             @OA\Property(property="workflow_definition_id", type="string", format="uuid"),
      *             @OA\Property(property="version", type="integer", example=1),
-     *             @OA\Property(property="is_active", type="boolean", example=true)
+     *             @OA\Property(property="status", type="string", enum={"DRAFT","PUBLISHED","RETIRED"}, example="DRAFT"),
+     *             @OA\Property(property="published_at", type="string", format="date-time", nullable=true)
      *         )
      *     ),
      *     @OA\Response(response=201, description="Created"),
@@ -168,11 +168,14 @@ class WorkflowApprovalController extends Controller
      *     path="/approval/workflow-approvals/{id}",
      *     operationId="updateWorkflowApproval",
      *     tags={"Approval - Workflow Approvals"},
-     *     summary="Update status aktif workflow approval",
+     *     summary="Update status workflow approval",
      *     security={{"ApiKeyAuth": {}}},
      *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="string", format="uuid")),
      *     @OA\RequestBody(required=true,
-     *         @OA\JsonContent(@OA\Property(property="is_active", type="boolean"))
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", enum={"DRAFT","PUBLISHED","RETIRED"}),
+     *             @OA\Property(property="published_at", type="string", format="date-time", nullable=true)
+     *         )
      *     ),
      *     @OA\Response(response=200, description="OK"),
      *     @OA\Response(response=422, description="Validation Error"),

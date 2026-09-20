@@ -20,29 +20,26 @@ class WorkflowRequest extends Model
         'workflow_approval_id',
         'request_code',
         'request_source',
-        'callback_url',
         'requester_id',
-        'current_level',
-        'current_approval_status_id',
+        'current_stage_id',
+        'approval_status_id',
+        'callback_url',
         'remarks',
-        'signature_hash',
         'completed_at',
         'created_by',
         'updated_by',
         'deleted_by',
     ];
 
-    protected $casts = [
-        'completed_at' => 'datetime',
-    ];
-
-    protected static function boot()
+    protected function casts(): array
     {
-        parent::boot();
-        static::creating(function ($model) {
-            if (empty($model->{$model->getKeyName()})) {
-                $model->{$model->getKeyName()} = (string) Str::uuid();
-            }
+        return ['completed_at' => 'datetime'];
+    }
+
+    protected static function booted(): void
+    {
+        static::creating(function (WorkflowRequest $request): void {
+            $request->id ??= (string) uuidv7();
         });
     }
 
@@ -51,9 +48,14 @@ class WorkflowRequest extends Model
         return $this->belongsTo(WorkflowApproval::class, 'workflow_approval_id');
     }
 
-    public function currentApprovalStatus()
+    public function approvalStatus()
     {
-        return $this->belongsTo(ApprovalStatus::class, 'current_approval_status_id');
+        return $this->belongsTo(ApprovalStatus::class, 'approval_status_id');
+    }
+
+    public function currentStage()
+    {
+        return $this->belongsTo(WorkflowApprovalStage::class, 'current_stage_id');
     }
 
     public function requester()

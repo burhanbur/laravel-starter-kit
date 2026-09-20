@@ -6,28 +6,22 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('routes', function (Blueprint $table) {
-            $table->char('id', 36)->primary();
-            $table->string('name');
+            $table->uuid('id')->primary();
+            $table->string('name')->unique();
             $table->string('method');
-            $table->text('description')->nullable();
             $table->string('module')->nullable();
-            $table->char('deleted_by', 36)->nullable();
-            $table->char('created_by', 36)->nullable();
-            $table->char('updated_by', 36)->nullable();
-            $table->softDeletes();
+            $table->text('description')->nullable();
+            $table->uuid('created_by')->nullable();
+            $table->uuid('updated_by')->nullable();
+            $table->uuid('deleted_by')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('routes');

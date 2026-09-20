@@ -29,10 +29,10 @@ class WorkflowApproverController extends Controller
      *     security={{"ApiKeyAuth": {}}},
      *     @OA\Parameter(name="page", in="query", @OA\Schema(type="integer", default=1)),
      *     @OA\Parameter(name="limit", in="query", @OA\Schema(type="integer", default=15, maximum=100)),
-     *     @OA\Parameter(name="sort_by", in="query", @OA\Schema(type="string", enum={"id","level","created_at"}, default="level")),
+     *     @OA\Parameter(name="sort_by", in="query", @OA\Schema(type="string", enum={"id","created_at"}, default="created_at")),
      *     @OA\Parameter(name="sort_order", in="query", @OA\Schema(type="string", enum={"asc","desc"}, default="asc")),
      *     @OA\Parameter(name="filter[workflow_approval_stage_id]", in="query", @OA\Schema(type="string", format="uuid")),
-     *     @OA\Parameter(name="filter[approval_type_id]", in="query", @OA\Schema(type="string", format="uuid")),
+     *     @OA\Parameter(name="filter[approver_type_id]", in="query", @OA\Schema(type="string", format="uuid")),
      *     @OA\Parameter(name="filter[user_id]", in="query", @OA\Schema(type="string", format="uuid")),
      *     @OA\Response(response=200, description="OK"),
      *     @OA\Response(response=401, description="Unauthorized"),
@@ -46,24 +46,24 @@ class WorkflowApproverController extends Controller
             $validated = $request->validate([
                 'page'        => 'integer|min:1',
                 'limit'       => 'integer|min:1|max:100',
-                'sort_by'     => 'string|in:id,level,created_at',
+                'sort_by'     => 'string|in:id,created_at',
                 'sort_order'  => 'string|in:asc,desc',
                 'filter'      => 'array',
                 'filter_type' => 'array',
             ]);
 
             $limit       = $validated['limit'] ?? 15;
-            $sortBy      = $validated['sort_by'] ?? 'level';
+            $sortBy      = $validated['sort_by'] ?? 'created_at';
             $sortOrder   = $validated['sort_order'] ?? 'asc';
             $filters     = $validated['filter'] ?? [];
             $filterTypes = $request->input('filter_type', []);
 
             $query = WorkflowApprover::query()
-                ->select(['id', 'workflow_approval_stage_id', 'approval_type_id', 'user_id', 'level', 'created_by', 'updated_by', 'created_at', 'updated_at'])
-                ->with(['approverType:id,name']);
+                ->select(['id', 'workflow_approval_stage_id', 'approver_type_id', 'user_id', 'position_id', 'is_optional', 'can_delegate', 'remarks', 'created_by', 'updated_by', 'created_at', 'updated_at'])
+                ->with(['approverType:id,code,name']);
 
             $query = $this->applyDynamicFilters($query, $filters, $filterTypes,
-                ['id', 'workflow_approval_stage_id', 'approval_type_id', 'user_id', 'level'],
+                ['id', 'workflow_approval_stage_id', 'approver_type_id', 'user_id', 'position_id'],
                 ['approverType']
             );
 
@@ -126,11 +126,11 @@ class WorkflowApproverController extends Controller
      *     security={{"ApiKeyAuth": {}}},
      *     @OA\RequestBody(required=true,
      *         @OA\JsonContent(
-     *             required={"workflow_approval_stage_id","approval_type_id","level"},
+     *             required={"workflow_approval_stage_id","approver_type_id"},
      *             @OA\Property(property="workflow_approval_stage_id", type="string", format="uuid"),
-     *             @OA\Property(property="approval_type_id", type="string", format="uuid"),
+     *             @OA\Property(property="approver_type_id", type="string", format="uuid"),
      *             @OA\Property(property="user_id", type="string", format="uuid", nullable=true),
-     *             @OA\Property(property="level", type="integer", example=1)
+     *             @OA\Property(property="position_id", type="string", format="uuid", nullable=true)
      *         )
      *     ),
      *     @OA\Response(response=201, description="Created"),
@@ -150,7 +150,7 @@ class WorkflowApproverController extends Controller
             Cache::flush();
 
             return $this->successResponse(
-                new WorkflowApproverResource($record->load('approverType:id,name')),
+                new WorkflowApproverResource($record->load('approverType:id,code,name')),
                 'Workflow approver berhasil dibuat', 201
             );
         } catch (Exception $e) {
@@ -170,9 +170,9 @@ class WorkflowApproverController extends Controller
      *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="string", format="uuid")),
      *     @OA\RequestBody(required=true,
      *         @OA\JsonContent(
-     *             @OA\Property(property="approval_type_id", type="string", format="uuid"),
+     *             @OA\Property(property="approver_type_id", type="string", format="uuid"),
      *             @OA\Property(property="user_id", type="string", format="uuid", nullable=true),
-     *             @OA\Property(property="level", type="integer")
+     *             @OA\Property(property="position_id", type="string", format="uuid", nullable=true)
      *         )
      *     ),
      *     @OA\Response(response=200, description="OK"),

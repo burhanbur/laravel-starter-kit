@@ -12,10 +12,9 @@ class WorkflowApproverResource extends JsonResource
         return [
             'id'                         => $this->id,
             'workflow_approval_stage_id' => $this->workflow_approval_stage_id,
-            'approval_type_id'           => $this->approval_type_id,
+            'approver_type_id'           => $this->approver_type_id,
             'user_id'                    => $this->user_id,
             'position_id'                => $this->position_id,
-            'level'                      => $this->level,
             'is_optional'                => $this->is_optional,
             'can_delegate'               => $this->can_delegate,
             'remarks'                    => $this->remarks,

@@ -71,9 +71,9 @@ class UserController extends Controller
             $data['updated_by'] = auth()->user()->id;
             $user = User::create($data);
 
-            // assign roles if provided
+            // Assign roles through the UUID-aware pivot helper.
             if (isset($data['roles'])) {
-                $user->roles()->sync($data['roles']);
+                $user->syncRoles($data['roles']);
             }
 
             DB::commit();
@@ -98,9 +98,9 @@ class UserController extends Controller
             $data['updated_by'] = auth()->user()->id;
             $user->update($data);
 
-            // assign roles if provided
+            // Assign roles through the UUID-aware pivot helper.
             if (isset($data['roles'])) {
-                $user->roles()->sync($data['roles']);
+                $user->syncRoles($data['roles']);
             }
 
             DB::commit();

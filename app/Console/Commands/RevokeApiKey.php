@@ -14,7 +14,7 @@ class RevokeApiKey extends Command
      * @var string
      */
     protected $signature = 'api:revoke-key
-                            {id : The ID of the API key to revoke}
+                            {prefix : The non-secret prefix of the API key to revoke}
                             {--permanent : Permanently delete the key instead of deactivating}';
 
     /**
@@ -29,16 +29,16 @@ class RevokeApiKey extends Command
      */
     public function handle()
     {
-        $id = $this->argument('id');
+        $prefix = $this->argument('prefix');
         $permanent = $this->option('permanent');
 
         $exitCode = 0;
         $action = null;
 
-        $apiKey = ApiKey::find($id);
+        $apiKey = ApiKey::where('key_prefix', $prefix)->first();
 
         if (!$apiKey) {
-            $this->error("API key with ID {$id} not found.");
+            $this->error("API key with prefix {$prefix} not found.");
             $exitCode = 1;
         } else {
             // Show API key details
@@ -46,10 +46,9 @@ class RevokeApiKey extends Command
             $this->table(
                 ['Property', 'Value'],
                 [
-                    ['ID', $apiKey->id],
+                    ['Prefix', $apiKey->key_prefix],
                     ['Name', $apiKey->name],
                     ['Application', $apiKey->application ?? 'N/A'],
-                    ['Masked Key', $apiKey->masked_key],
                     ['Status', $apiKey->is_active ? 'Active' : 'Inactive'],
                     ['Created', $apiKey->created_at->format('Y-m-d H:i:s')],
                     ['Last Used', $apiKey->last_used_at ? $apiKey->last_used_at->format('Y-m-d H:i:s') : 'Never'],
@@ -59,7 +58,7 @@ class RevokeApiKey extends Command
             // Confirm action and perform it if confirmed
             if ($permanent) {
                 if ($this->confirm('Are you sure you want to PERMANENTLY DELETE this API key?')) {
-                    $apiKey->delete();
+                    $apiKey->forceDelete();
                     $action = 'deleted';
                 } else {
                     $this->info('Operation cancelled.');
@@ -78,7 +77,7 @@ class RevokeApiKey extends Command
 
             // If an action was taken, clear caches and show message
             if (!is_null($action)) {
-                Cache::forget('api_key_' . md5($apiKey->key));
+                Cache::forget('api_key_' . $apiKey->key_hash);
                 Cache::forget('api_rate_limit_' . $apiKey->id);
                 $this->info("✅ API key successfully {$action}!");
             }

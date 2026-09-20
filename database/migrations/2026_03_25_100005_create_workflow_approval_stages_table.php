@@ -6,33 +6,25 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('workflow_approval_stages', function (Blueprint $table) {
-            $table->char('id', 36)->primary();
-            $table->char('workflow_approval_id', 36);
+            $table->uuid('id')->primary();
+            $table->uuid('workflow_approval_id');
             $table->smallInteger('sequence');
-            $table->smallInteger('level');
-            $table->string('approval_logic')->comment('ALL or ANY');
-            $table->string('name')->nullable()->comment('Optional, e.g. Manager Approval');
-            $table->char('created_by', 36)->nullable();
-            $table->char('updated_by', 36)->nullable();
-            $table->char('deleted_by', 36)->nullable();
-            $table->softDeletes();
+            $table->string('approval_logic')->default('ANY');
+            $table->string('name');
+            $table->uuid('created_by')->nullable();
+            $table->uuid('updated_by')->nullable();
+            $table->uuid('deleted_by')->nullable();
             $table->timestamps();
-        });
+            $table->softDeletes();
 
-        Schema::table('workflow_approval_stages', function (Blueprint $table) {
-            $table->foreign('workflow_approval_id')->references('id')->on('workflow_approvals')->onDelete('cascade');
+            $table->foreign('workflow_approval_id')->references('id')->on('workflow_approvals')->cascadeOnDelete();
+            $table->unique(['workflow_approval_id', 'sequence']);
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('workflow_approval_stages');

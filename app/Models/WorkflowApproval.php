@@ -19,23 +19,25 @@ class WorkflowApproval extends Model
     protected $fillable = [
         'workflow_definition_id',
         'version',
-        'is_active',
+        'status',
+        'published_at',
         'created_by',
         'updated_by',
         'deleted_by',
     ];
 
-    protected $casts = [
-        'is_active' => 'boolean',
-    ];
-
-    protected static function boot()
+    protected function casts(): array
     {
-        parent::boot();
-        static::creating(function ($model) {
-            if (empty($model->{$model->getKeyName()})) {
-                $model->{$model->getKeyName()} = (string) Str::uuid();
-            }
+        return [
+            'version' => 'integer',
+            'published_at' => 'datetime',
+        ];
+    }
+
+    protected static function booted(): void
+    {
+        static::creating(function (WorkflowApproval $approval): void {
+            $approval->id ??= (string) uuidv7();
         });
     }
 
@@ -47,11 +49,6 @@ class WorkflowApproval extends Model
     public function stages()
     {
         return $this->hasMany(WorkflowApprovalStage::class, 'workflow_approval_id');
-    }
-
-    public function approvalStatuses()
-    {
-        return $this->hasMany(ApprovalStatus::class, 'workflow_approval_id');
     }
 
     public function workflowRequests()

@@ -9,14 +9,15 @@ class UpdateWorkflowApprovalRequest extends BaseFormRequest
     public function rules(): array
     {
         return [
-            'is_active' => ['sometimes', 'required', 'boolean'],
+            'status'       => ['sometimes', 'required', 'string', 'in:DRAFT,PUBLISHED,RETIRED'],
+            'published_at' => ['nullable', 'date'],
         ];
     }
 
     public function messages(): array
     {
         return [
-            'is_active.boolean' => 'Status aktif harus berupa boolean',
+            'status.in' => 'Status harus DRAFT, PUBLISHED, atau RETIRED',
         ];
     }
 }

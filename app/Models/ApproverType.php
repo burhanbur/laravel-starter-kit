@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Str;
 
 class ApproverType extends Model
@@ -17,6 +17,7 @@ class ApproverType extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'code',
         'name',
         'description',
         'created_by',
@@ -24,23 +25,15 @@ class ApproverType extends Model
         'deleted_by',
     ];
 
-    protected static function boot()
+    protected static function booted(): void
     {
-        parent::boot();
-        static::creating(function ($model) {
-            if (empty($model->{$model->getKeyName()})) {
-                $model->{$model->getKeyName()} = (string) Str::uuid();
-            }
+        static::creating(function (ApproverType $type): void {
+            $type->id ??= (string) uuidv7();
         });
     }
 
     public function workflowApprovers()
     {
-        return $this->hasMany(WorkflowApprover::class, 'approval_type_id');
-    }
-
-    public function approvals()
-    {
-        return $this->hasMany(Approval::class, 'approval_type_id');
+        return $this->hasMany(WorkflowApprover::class, 'approver_type_id');
     }
 }

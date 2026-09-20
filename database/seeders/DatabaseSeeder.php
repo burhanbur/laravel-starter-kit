@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\UserRole;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -25,6 +24,8 @@ class DatabaseSeeder extends Seeder
                 MenuSeeder::class,
                 RoleMenuSeeder::class,
                 RolePermissionSeeder::class,
+                ApprovalStatusSeeder::class,
+                ApproverTypeSeeder::class,
             ]);
 
             DB::commit();

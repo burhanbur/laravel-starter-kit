@@ -6,7 +6,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Str;
 use Closure;
 
-class TransformReponseKeys
+class TransformResponseKeys
 {
     /**
      * Handle an incoming request.

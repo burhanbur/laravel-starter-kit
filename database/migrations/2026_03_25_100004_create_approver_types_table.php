@@ -6,26 +6,21 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('approver_types', function (Blueprint $table) {
-            $table->char('id', 36)->primary();
-            $table->string('name')->comment('e.g. User, Position');
+            $table->uuid('id')->primary();
+            $table->string('code')->unique();
+            $table->string('name');
             $table->text('description')->nullable();
-            $table->char('created_by', 36)->nullable();
-            $table->char('updated_by', 36)->nullable();
-            $table->char('deleted_by', 36)->nullable();
-            $table->softDeletes();
+            $table->uuid('created_by')->nullable();
+            $table->uuid('updated_by')->nullable();
+            $table->uuid('deleted_by')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('approver_types');
