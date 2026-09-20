@@ -7,6 +7,14 @@
     <meta name="description" content="@yield('description', '')">
     <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon.ico') }}">
 
+    <!-- Early Tabler Theme Initialization to prevent flash -->
+    <script>
+        (function () {
+            var currentTheme = localStorage.getItem('tabler-theme') || 'light';
+            document.documentElement.setAttribute('data-bs-theme', currentTheme);
+        })();
+    </script>
+
     <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -123,11 +131,14 @@
         .badge-pill { border-radius: 50rem !important; }
 
         /* Tabler Theme Toggle Buttons */
-        [data-bs-theme="dark"] .hide-theme-dark {
+        html[data-bs-theme="dark"] .hide-theme-dark,
+        body[data-bs-theme="dark"] .hide-theme-dark,
+        body.theme-dark .hide-theme-dark {
             display: none !important;
         }
-        [data-bs-theme="light"] .hide-theme-light,
-        :not([data-bs-theme]) .hide-theme-light {
+        html[data-bs-theme="light"] .hide-theme-light,
+        body[data-bs-theme="light"] .hide-theme-light,
+        html:not([data-bs-theme="dark"]) body:not([data-bs-theme="dark"]):not(.theme-dark) .hide-theme-light {
             display: none !important;
         }
     </style>
@@ -194,12 +205,31 @@
         // Dark/Light mode persistence for Tabler
         function setTablerTheme(theme) {
             localStorage.setItem('tabler-theme', theme);
+            applyTablerTheme(theme);
+
+            // Hide active tooltips on theme toggle
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.forEach(function (el) {
+                var tooltip = bootstrap.Tooltip.getInstance(el);
+                if (tooltip) {
+                    tooltip.hide();
+                }
+            });
+        }
+
+        function applyTablerTheme(theme) {
+            document.documentElement.setAttribute('data-bs-theme', theme);
             document.body.setAttribute('data-bs-theme', theme);
+            if (theme === 'dark') {
+                document.body.classList.add('theme-dark');
+            } else {
+                document.body.classList.remove('theme-dark');
+            }
         }
 
         (function () {
             var currentTheme = localStorage.getItem('tabler-theme') || 'light';
-            document.body.setAttribute('data-bs-theme', currentTheme);
+            applyTablerTheme(currentTheme);
         })();
 
         // Compatibility currency & input formatters

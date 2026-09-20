@@ -45,6 +45,7 @@ Route::group(['middleware' => ['auth']], function () {
             Route::get('create', [UserController::class, 'create'])->name('user.create');
             Route::get('edit/{id}', [UserController::class, 'edit'])->name('user.edit');
             Route::get('change-password/{id}', [UserController::class, 'changePassword'])->name('user.change-password');
+            Route::post('toggle-status/{id}', [UserController::class, 'toggleStatus'])->name('user.toggle-status');
 
             Route::post('/', [UserController::class, 'store'])->name('user.store');
             Route::put('/{id}', [UserController::class, 'update'])->name('user.update');

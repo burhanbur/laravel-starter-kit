@@ -7,6 +7,13 @@ use Illuminate\Validation\Rule;
 
 class UpdateUserRequest extends BaseFormRequest
 {
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'is_active' => $this->boolean('is_active'),
+        ]);
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *

@@ -29,6 +29,12 @@ class UserPermission
         }
 
         // Ambil daftar role yang boleh mengakses rute ini
+        // Petakan sub-rute aksi ke rute izin utama jika belum terdaftar secara mandiri di database
+        $permissionRoute = match ($route) {
+            'user.toggle-status' => 'user.update',
+            default => $route,
+        };
+
         $sql = "
             SELECT role.name as role 
             FROM role_permissions AS rp 
@@ -38,7 +44,7 @@ class UserPermission
             WHERE ur.user_id = ? AND route.name = ?
         ";
 
-        $roles = DB::select($sql, [$user->id, $route]);
+        $roles = DB::select($sql, [$user->id, $permissionRoute]);
 
         if (empty($roles)) {
             Log::warning("Rute '$route' tidak ditemukan dalam database.");

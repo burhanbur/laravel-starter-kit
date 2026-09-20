@@ -10,8 +10,16 @@
             </a>
         </h1>
 
-        <!-- Mobile user dropdown -->
-        <div class="navbar-nav flex-row d-lg-none">
+        <!-- Mobile user dropdown & theme switcher -->
+        <div class="navbar-nav flex-row d-lg-none align-items-center">
+            <div class="nav-item me-3">
+                <a href="javascript:void(0);" class="nav-link px-0 hide-theme-dark text-reset" title="Mode Gelap" onclick="setTablerTheme('dark')">
+                    <i class="ti ti-moon fs-2"></i>
+                </a>
+                <a href="javascript:void(0);" class="nav-link px-0 hide-theme-light text-reset" title="Mode Terang" onclick="setTablerTheme('light')">
+                    <i class="ti ti-sun fs-2"></i>
+                </a>
+            </div>
             <div class="nav-item dropdown">
                 <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown" aria-label="Open user menu">
                     <span class="avatar avatar-sm">{{ strtoupper(substr(auth()->user()->name ?? 'U', 0, 2)) }}</span>

@@ -7,12 +7,14 @@
         <div class="navbar-nav flex-row order-md-last ms-auto">
             <!-- Dark / Light Mode Switcher -->
             <div class="d-none d-md-flex me-3">
-                <a href="javascript:void(0);" class="nav-link px-0 hide-theme-dark" title="Mode Gelap" data-bs-toggle="tooltip" data-bs-placement="bottom" onclick="setTablerTheme('dark')">
-                    <i class="ti ti-moon fs-2"></i>
-                </a>
-                <a href="javascript:void(0);" class="nav-link px-0 hide-theme-light" title="Mode Terang" data-bs-toggle="tooltip" data-bs-placement="bottom" onclick="setTablerTheme('light')">
-                    <i class="ti ti-sun fs-2"></i>
-                </a>
+                <div class="nav-item">
+                    <a href="javascript:void(0);" class="nav-link px-0 hide-theme-dark" title="Mode Gelap" data-bs-toggle="tooltip" data-bs-placement="bottom" onclick="setTablerTheme('dark')">
+                        <i class="ti ti-moon fs-2"></i>
+                    </a>
+                    <a href="javascript:void(0);" class="nav-link px-0 hide-theme-light" title="Mode Terang" data-bs-toggle="tooltip" data-bs-placement="bottom" onclick="setTablerTheme('light')">
+                        <i class="ti ti-sun fs-2"></i>
+                    </a>
+                </div>
             </div>
 
             @if(session('impersonated_by'))

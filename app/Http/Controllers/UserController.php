@@ -24,12 +24,12 @@ class UserController extends Controller
 {
     public function index(Request $request)
     {
-        $role = $request->input('role', null);
+        $selectedRoles = array_values(array_filter((array) $request->input('roles', [])));
         $roles = Role::orderBy('name', 'asc')->get();
         $user = User::with(['roles'])
-            ->when($role, function ($query, $role) {
-                $query->whereHas('roles', function ($q) use ($role) {
-                    $q->where('id', $role);
+            ->when($selectedRoles, function ($query, $selectedRoles) {
+                $query->whereHas('roles', function ($q) use ($selectedRoles) {
+                    $q->whereIn('roles.id', $selectedRoles);
                 });
             })
             ->orderBy('name', 'asc')
@@ -67,14 +67,14 @@ class UserController extends Controller
         DB::beginTransaction();
 
         try {
+            $roles = $data['roles'] ?? [];
+            unset($data['roles']);
+
+            $data['is_active'] = $request->boolean('is_active');
             $data['created_by'] = auth()->user()->id;
             $data['updated_by'] = auth()->user()->id;
             $user = User::create($data);
-
-            // Assign roles through the UUID-aware pivot helper.
-            if (isset($data['roles'])) {
-                $user->syncRoles($data['roles']);
-            }
+            $user->syncRoles($roles);
 
             DB::commit();
             Session::flash('notification', ['level' => 'success', 'message' => 'Data pengguna berhasil dibuat.']);
@@ -94,14 +94,20 @@ class UserController extends Controller
         DB::beginTransaction();
 
         try {
+            $roles = $data['roles'] ?? [];
+            unset($data['roles']);
+
             $user = User::findOrFail($id);
+            $data['is_active'] = $request->boolean('is_active');
+            
+            // Prevent self-deactivation
+            if ($user->id === auth()->id() && !$data['is_active']) {
+                $data['is_active'] = true;
+            }
+
             $data['updated_by'] = auth()->user()->id;
             $user->update($data);
-
-            // Assign roles through the UUID-aware pivot helper.
-            if (isset($data['roles'])) {
-                $user->syncRoles($data['roles']);
-            }
+            $user->syncRoles($roles);
 
             DB::commit();
             Session::flash('notification', ['level' => 'success', 'message' => 'Data pengguna berhasil diperbarui.']);
@@ -137,6 +143,45 @@ class UserController extends Controller
         }
     }
 
+    public function toggleStatus(Request $request, $id)
+    {
+        $currentUser = auth()->user();
+
+        if ($currentUser && $currentUser->id === $id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Anda tidak dapat mengubah status aktif akun Anda sendiri.'
+            ], 422);
+        }
+
+        DB::beginTransaction();
+
+        try {
+            $user = User::findOrFail($id);
+            $user->is_active = !$user->is_active;
+            $user->updated_by = $currentUser ? $currentUser->id : null;
+            $user->save();
+
+            DB::commit();
+
+            $statusLabel = $user->is_active ? 'diaktifkan' : 'dinonaktifkan';
+
+            return response()->json([
+                'success' => true,
+                'is_active' => $user->is_active,
+                'message' => "Akun {$user->name} berhasil {$statusLabel}."
+            ]);
+        } catch (Exception $ex) {
+            DB::rollBack();
+            Log::error($ex->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal memperbarui status pengguna.'
+            ], 500);
+        }
+    }
+
     public function destroy($id)
     {
         DB::beginTransaction();
@@ -162,12 +207,19 @@ class UserController extends Controller
 
     public function impersonate(User $user)
     {
-        if (!auth()->user()) {
+        $currentUser = auth()->user();
+
+        if (!$currentUser) {
             return redirect()->back();
         }
 
-        auth()->user()->impersonate($user);
-        
+        if ($currentUser->is($user)) {
+            Session::flash('notification', ['level' => 'warning', 'message' => 'Anda tidak dapat melakukan impersonasi terhadap akun sendiri.']);
+            return redirect()->back();
+        }
+
+        $currentUser->impersonate($user);
+
         return redirect()->route('dashboard');
     }
 
