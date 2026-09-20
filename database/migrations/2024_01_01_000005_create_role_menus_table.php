@@ -12,16 +12,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('role_menus', function (Blueprint $table) {
-            $table->char('id', 36)->primary();
-            $table->char('parent_id', 36)->nullable();
-            $table->char('role_id', 36);
-            $table->char('menu_id', 36);
-            $table->char('route_id', 36)->nullable();
+            $table->uuid('id')->primary();
+            $table->uuid('parent_id')->nullable();
+            $table->uuid('role_id');
+            $table->uuid('menu_id');
+            $table->uuid('route_id')->nullable();
             $table->unsignedBigInteger('menu_type_id')->nullable()->default(1);
             $table->smallInteger('sequence')->default(0);
             $table->boolean('is_active')->default(true);
-            $table->char('created_by', 36)->nullable();
-            $table->char('updated_by', 36)->nullable();
+            $table->uuid('created_by')->nullable();
+            $table->uuid('updated_by')->nullable();
             $table->timestamps();
 
             $table->foreign('role_id')->references('id')->on('roles')->onDelete('cascade');

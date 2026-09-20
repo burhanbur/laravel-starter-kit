@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('menu_types', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
-            $table->char('created_by', 36)->nullable();
-            $table->char('updated_by', 36)->nullable();
+            $table->uuid('created_by')->nullable();
+            $table->uuid('updated_by')->nullable();
             $table->timestamps();
         });
     }

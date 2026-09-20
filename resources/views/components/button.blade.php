@@ -14,7 +14,7 @@
         default => '',
     };
     
-    $blockClass = $block ? 'btn-block' : '';
+    $blockClass = $block ? 'btn-block w-100' : '';
     
     $classes = trim("btn btn-{$variant} {$sizeClass} {$blockClass}");
 @endphp

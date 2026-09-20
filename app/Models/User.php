@@ -289,7 +289,9 @@ class User extends Authenticatable implements JWTSubject
         if (is_string($roles)) {
             $role = Role::where('code', $roles)
                 ->orWhere('name', $roles)
-                ->orWhere('id', $roles)
+                ->when(Str::isUuid($roles), function ($query) use ($roles) {
+                    $query->orWhere('id', $roles);
+                })
                 ->first();
             
             return $role ? [$role->id] : [];
@@ -304,7 +306,9 @@ class User extends Authenticatable implements JWTSubject
                 } elseif (is_string($role)) {
                     $foundRole = Role::where('code', $role)
                         ->orWhere('name', $role)
-                        ->orWhere('id', $role)
+                        ->when(Str::isUuid($role), function ($query) use ($role) {
+                            $query->orWhere('id', $role);
+                        })
                         ->first();
                     
                     if ($foundRole) {

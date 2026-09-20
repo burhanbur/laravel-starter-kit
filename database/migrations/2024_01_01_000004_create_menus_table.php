@@ -12,12 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('menus', function (Blueprint $table) {
-            $table->char('id', 36)->primary();
+            $table->uuid('id')->primary();
             $table->string('name');
             $table->string('icon')->nullable();
-            $table->char('deleted_by', 36)->nullable();
-            $table->char('created_by', 36)->nullable();
-            $table->char('updated_by', 36)->nullable();
+            $table->uuid('deleted_by')->nullable();
+            $table->uuid('created_by')->nullable();
+            $table->uuid('updated_by')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

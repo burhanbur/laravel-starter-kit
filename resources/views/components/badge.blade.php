@@ -4,9 +4,9 @@
 ])
 
 @php
-    $badgeClass = 'badge badge-' . $type;
+    $badgeClass = 'badge badge-' . $type . ' bg-' . $type;
     if ($pill) {
-        $badgeClass .= ' badge-pill';
+        $badgeClass .= ' badge-pill rounded-pill';
     }
 @endphp
 

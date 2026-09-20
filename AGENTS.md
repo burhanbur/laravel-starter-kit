@@ -129,13 +129,16 @@ You are an expert full-stack Laravel AI assistant working on this repository. Fo
 
 ---
 
-## 7. Views (Blade & Metronic UI)
+## 7. Views & Multi-Theme Architecture
 - **Location:** `resources/views/pages/{module-name}/` (e.g., `pages/user/index.blade.php`).
-- **Base Layout:** `@extends('layouts.main')`.
-- **Theme Components:** Use Metronic UI classes:
-  - Portlet: `kt-portlet`, `kt-portlet__head`, `kt-portlet__body`
-  - Badges: `kt-badge`, `badge-primary`, `badge-success`, etc.
-  - Forms: `form-group`, `form-control`
+- **Base Layout:** `@extends('layouts.main')` (All pages MUST extend `layouts.main`).
+- **Multi-Theme Support:**
+  - Configured via `config/theme.php` and `APP_THEME` in `.env` (`metronic`, `tabler`, `sneat`).
+  - Single View Source: Never duplicate page views per theme. The root `layouts/main.blade.php` delegates shell rendering to `resources/views/layouts/themes/{active}/`.
+- **Theme Components & Compatibility:**
+  - Dynamic Card: Use `<x-card title="...">` which automatically adapts to Metronic (`kt-portlet`) or Bootstrap 5 (`card`).
+  - Portlet Bridge: Existing `.kt-portlet` classes are bridged via CSS in Tabler and Sneat to prevent regressions.
+  - Standard elements: Forms (`form-group`, `form-control`), Badges (`badge`, `kt-badge`), DataTables, and Modals work across all 3 themes.
 
 ---
 

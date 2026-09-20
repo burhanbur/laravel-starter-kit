@@ -29,6 +29,12 @@ class MenuSeeder extends Seeder
                 'updated_by' => null,
             ],
             [
+                'name' => 'Konfigurasi',
+                'icon' => 'flaticon2-settings',
+                'created_by' => null,
+                'updated_by' => null,
+            ],
+            [
                 'name' => 'Manajemen Peran',
                 'icon' => 'flaticon2-shield',
                 'created_by' => null,

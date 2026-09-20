@@ -43,9 +43,9 @@ class UserSeeder extends Seeder
             ],
             [
                 'id' => 'c1234567-89ab-4cde-f012-3456789abcde',
-                'name' => 'Mechanical Engineer',
-                'username' => 'me',
-                'email' => 'me@example.com',
+                'name' => 'User',
+                'username' => 'user',
+                'email' => 'user@example.com',
                 'phone' => '081234567892',
                 'password' => Hash::make('password'),
                 'email_verified_at' => now(),

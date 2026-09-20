@@ -44,18 +44,20 @@
 									@else
 										{{-- Parent menu with children --}}
 										@php
-											$hasActiveChild = false;
-											foreach ($menu->children as $child) {
-												if (Request::route()->getName() == $child->route_name) {
-													$hasActiveChild = true;
-													break;
+											$hasActiveChild = !empty($menu->is_active) || !empty($menu->has_active_child);
+											if (!$hasActiveChild) {
+												foreach ($menu->children as $child) {
+													if (Request::route()->getName() == $child->route_name || !empty($child->is_active)) {
+														$hasActiveChild = true;
+														break;
+													}
 												}
 											}
 										@endphp
 										<li class="kt-menu__item  kt-menu__item--submenu kt-menu__item--rel @if($hasActiveChild || Request::route()->getName() == $menu->route_name) kt-menu__item--active kt-menu__item--here @endif" data-ktmenu-submenu-toggle="click" aria-haspopup="true">
 											<a href="javascript:void(0);" class="kt-menu__link kt-menu__toggle">
 												<span class="kt-menu__link-icon">
-													<i class="{{ $menu->icon ?? 'flaticon2-menu' }}"></i>
+													<i class="{{ $menu->icon ?? 'flaticon2-settings' }}"></i>
 												</span>
 												<span class="kt-menu__link-text">{{ $menu->name }}</span>
 												<i class="kt-menu__hor-arrow la la-angle-down"></i>
@@ -64,7 +66,7 @@
 											<div class="kt-menu__submenu kt-menu__submenu--classic kt-menu__submenu--left">
 												<ul class="kt-menu__subnav">
 													@foreach ($menu->children as $subMenu)
-														<li class="kt-menu__item @if(Request::route()->getName() == $subMenu->route_name) kt-menu__item--active @endif" aria-haspopup="true">
+														<li class="kt-menu__item @if(Request::route()->getName() == $subMenu->route_name || !empty($subMenu->is_active)) kt-menu__item--active @endif" aria-haspopup="true">
 															<a href="{{ $subMenu->route_name ? route($subMenu->route_name) : 'javascript:void(0);' }}" class="kt-menu__link ">
 																<i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
 																<span class="kt-menu__link-text">{{ $subMenu->name }}</span>

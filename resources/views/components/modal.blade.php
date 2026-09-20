@@ -11,13 +11,13 @@
     $sizeClass = $size ? 'modal-' . $size : '';
 @endphp
 
-<div class="modal fade" id="{{ $id }}" tabindex="-1" role="dialog" aria-labelledby="{{ $id }}Label" aria-hidden="true" {{ $static ? 'data-backdrop="static"' : '' }}>
+<div class="modal fade" id="{{ $id }}" tabindex="-1" role="dialog" aria-labelledby="{{ $id }}Label" aria-hidden="true" {{ $static ? 'data-backdrop="static" data-bs-backdrop="static"' : '' }}>
     <div class="modal-dialog {{ $sizeClass }} {{ $centered ? 'modal-dialog-centered' : '' }} {{ $scrollable ? 'modal-dialog-scrollable' : '' }}" role="document">
         <div class="modal-content">
             @if($title)
             <div class="modal-header">
                 <h5 class="modal-title" id="{{ $id }}Label">{{ $title }}</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close btn-close" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
